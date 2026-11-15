@@ -9,9 +9,9 @@ import './learn.css';
 
 const byAccession = Object.fromEntries(investigations.map(s => [s.accession, s]));
 const modes = [
- ['habitat', Box, 'Hábitats 3D', 'Explora las partes'],
- ['lab', Flame, 'Laboratorio de llama', 'Cambia la gravedad'],
- ['mission', Siren, 'Misión', '¡Humo en el módulo!'],
+ ['habitat', Box, 'Hábitats 3D', 'Explora las partes', '#5aa9ff', 'Gira una nave, una base lunar y un rover, y descubre cada pieza.'],
+ ['lab', Flame, 'Laboratorio de llama', 'Cambia la gravedad', '#ff8a3d', 'Mueve gravedad, oxígeno y viento. Supera 6 retos.'],
+ ['mission', Siren, 'Misión', '¡Humo en el módulo!', '#ff5a6e', 'Suena la alarma: toma 6 decisiones y gana puntos.'],
 ];
 
 const firstSentence = t => (t || '').split(/(?<=[.!?:])\s/)[0];
@@ -108,7 +108,7 @@ export default function LearnHabitat({navigate, onAsk}) {
     <div className="home-eyebrow"><span/>APRENDE EXPLORANDO · SECUNDARIA</div>
     <h1>Fuego en el espacio.<br/><em>Aprende jugando.</em></h1>
     <p className="discovery-lead">Recorre una nave, una base lunar y un rover pieza por pieza.<br/>Juega con una llama cambiando la gravedad y ponte a prueba en una misión.</p>
-    <div className="learn-hero-actions">{modes.map(([id, Icon, t, sub]) => <button key={id} className={`learn-hero-chip ${mode === id ? 'active' : ''}`} onClick={() => choose(id)}><Icon size={18}/><span><strong>{t}</strong><small>{sub}</small></span><ArrowUpRight size={15}/></button>)}</div>
+    <div className="learn-hero-actions">{modes.map(([id, Icon, t, sub, color]) => <button key={id} className={`learn-hero-chip ${mode === id ? 'active' : ''}`} style={{'--game': color}} onClick={() => choose(id)}><Icon size={18}/><span><strong>{t}</strong><small>{sub}</small></span><ArrowUpRight size={15}/></button>)}</div>
    </div>
    <div className="discovery-visual">
     {paused ? <img src="/media/droplet-flame.jpg" alt=""/> : <video autoPlay muted loop playsInline preload="metadata" poster="/media/droplet-flame.jpg" onLoadedMetadata={e => { e.currentTarget.currentTime = 28; }} onTimeUpdate={e => { if (e.currentTarget.currentTime > 57) e.currentTarget.currentTime = 28; }} aria-label="Gota de combustible ardiendo en microgravedad, NASA FLEX-2"><source src="/media/flex-2.webm" type="video/webm"/></video>}
@@ -116,15 +116,14 @@ export default function LearnHabitat({navigate, onAsk}) {
    </div>
   </section>
 
-  <section className="home-proof learn-proof" aria-label="Lo que puedes explorar">
-   <div><strong>3</strong><span>hábitats en 3D</span></div>
-   <div><strong>18</strong><span>partes para descubrir</span></div>
-   <div><strong>6</strong><span>decisiones en la misión</span></div>
-   <div className="home-proof-source"><Info size={22}/><span>Herramienta educativa.<br/><strong>No es una simulación validada.</strong></span></div>
-  </section>
-
-  <nav className="learn-modes" role="tablist" aria-label="Actividades" id="learn-activity">
-   {modes.map(([id, Icon, t, sub], i) => <button key={id} role="tab" aria-selected={mode === id} className={mode === id ? 'active' : ''} onClick={() => setMode(id)}><span className="learn-mode-index">0{i + 1}</span><Icon size={20}/><span><strong>{t}</strong><small>{sub}</small></span></button>)}
+  <nav className="learn-games" role="tablist" aria-label="Elige un juego" id="learn-activity">
+   {modes.map(([id, Icon, t, sub, color, blurb], i) => <button key={id} role="tab" aria-selected={mode === id} className={`learn-game ${mode === id ? 'active' : ''}`} style={{'--game': color}} onClick={() => setMode(id)}>
+    <span className="learn-game-tag">JUEGO {i + 1}</span>
+    <span className="learn-game-icon"><Icon size={38} strokeWidth={1.7}/></span>
+    <strong>{t}</strong>
+    <small>{blurb}</small>
+    <span className="learn-game-play">{mode === id ? <>Jugando ahora</> : <>Jugar<Play size={14}/></>}</span>
+   </button>)}
   </nav>
 
   <div className="home-section-heading learn-section-heading" key={mode}>

@@ -56,3 +56,49 @@ html,body,.app-shell,.app-shell button,.app-shell input,.app-shell select,.app-s
 
 /* Flame spotlight and Learn headings pick up the same voice. */
 .app-shell .flame-spotlight-copy h2,.app-shell .quick-card-title,.app-shell .fire-mission h2{font-family:var(--display);letter-spacing:-.03em}
+
+/* ===== Slightly larger reading sizes ===== */
+.app-shell{font-size:16px}
+.app-shell .button{font-size:14.5px}
+.app-shell .discovery-lead{font-size:20px}
+.app-shell .home-section-heading>p{font-size:16px}
+.app-shell .home-proof span{font-size:14.5px}
+.app-shell .featured-study-list h3{font-size:21px}
+.app-shell .featured-study-list p,.app-shell .home-independent p{font-size:14.5px}
+.app-shell .context-choice small{font-size:15px}
+/* Explore and dashboards */
+.app-shell .investigation-card p{font-size:15.5px;line-height:1.7}
+.app-shell .investigation-card h3{font-size:21px}
+.app-shell .viz-chip{font-size:14px}
+.app-shell .detail-hero p{font-size:17px}
+.app-shell .viz-kpi>span:not(.viz-kpi-icon){font-size:14.5px}
+.app-shell .compare-card p{font-size:14.5px}
+.app-shell .compare-table th,.app-shell .compare-table td{font-size:14.5px}
+.app-shell .source-row-card,.app-shell .nasa-caption{font-size:14px}
+/* Aprende */
+.app-shell .learn-intro{font-size:17px}
+.app-shell .learn-component>p{font-size:16.5px}
+.app-shell .learn-component h3{font-size:15px}
+.app-shell .learn-materials li,.app-shell .learn-notes li{font-size:15.5px}
+.app-shell .learn-conditions dd,.app-shell .learn-environment dd{font-size:15px}
+.app-shell .learn-related strong{font-size:15px}
+.app-shell .learn-component-list button{font-size:14.5px}
+.app-shell .quick-card p{font-size:15.5px}
+.app-shell .quick-card li{font-size:14.5px}
+.app-shell .quick-card-title{font-size:22px}
+.app-shell .learn-hero-chip strong{font-size:17px}
+.app-shell .learn-hero-chip small{font-size:14px}
+.app-shell .lab-module-head{font-size:15px}
+.app-shell .lab-switch{font-size:15px}
+.app-shell .lab-gauge strong{font-size:16px}
+.app-shell .lab-terminal-text{font-size:14px}
+.app-shell .lab-challenge{font-size:14px}
+.app-shell .lab-files a{font-size:13.5px}
+.app-shell .lab-presets button{font-size:12.5px}
+.app-shell .fire-mission p{font-size:17px}
+.app-shell .mission-option{font-size:17px}
+.app-shell .mission-feedback p{font-size:16px}
+.app-shell .mission-recap li{font-size:14.5px}
+.app-shell .flame-spotlight-copy ol{font-size:16.5px}
+.app-shell .flame-spotlight-why{font-size:15.5px}
+@media(max-width:600px){.app-shell .discovery-lead{font-size:17px}.app-shell .investigation-card p{font-size:15px}}
