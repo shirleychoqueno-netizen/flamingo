@@ -1,4 +1,4 @@
-import React,{useCallback,useEffect,useRef,useState} from 'react';
+import React,{useCallback,useEffect,useLayoutEffect,useRef,useState} from 'react';
 import {ArrowRight,ArrowUpRight,Sparkles,Pause,Play,ScanLine,X} from 'lucide-react';
 import {investigations} from './investigation-catalog';
 
@@ -17,13 +17,34 @@ const paths=[
   why:'That is why turning off the ventilation is one of the first steps when a fire is detected on a spacecraft.',related:['PSI-25','PSI-100']},
 ];
 
-function FlameSpotlight({path,paused,onClose,onAsk}){
- useEffect(()=>{const key=e=>{if(e.key==='Escape')onClose();};window.addEventListener('keydown',key);return()=>window.removeEventListener('keydown',key);},[onClose]);
- return <div className="flame-spotlight" role="dialog" aria-modal="true" aria-labelledby="flame-spotlight-title" onClick={onClose}>
-  <div className="flame-spotlight-card" onClick={e=>e.stopPropagation()}>
-   <div className="flame-spotlight-media">{path.video&&!paused?<video autoPlay muted loop playsInline poster={path.image} onLoadedMetadata={e=>{e.currentTarget.currentTime=28;}} onTimeUpdate={e=>{if(e.currentTarget.currentTime>57)e.currentTarget.currentTime=28;}}><source src={path.video} type="video/webm"/></video>:<img src={paused?path.image:path.animation||path.image} alt={`${path.label}: ${path.context}`}/>}<span className="flame-spotlight-context">{path.context}</span></div>
-   <div className="flame-spotlight-copy">
-    <button className="flame-spotlight-close icon-button" onClick={onClose} aria-label="Close"><X size={18}/></button>
+const EASE_OPEN='cubic-bezier(.7,0,.2,1)',EASE_TEXT='cubic-bezier(.2,.8,.2,1)';
+function FlameSpotlight({path,paused,origin,onDone,onAsk}){
+ const backdrop=useRef(null),card=useRef(null),media=useRef(null),copy=useRef(null),closing=useRef(false);
+ const reduce=typeof matchMedia!=='undefined'&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+ // Circle that matches the orb the user hovered, in card coordinates.
+ const geometry=()=>{const c=card.current.getBoundingClientRect();const o=origin||{left:c.left+c.width/2-60,top:c.top+c.height/2-60,width:120,height:120};const x=o.left+o.width/2-c.left,y=o.top+o.height/2-c.top;return{from:`circle(${o.width/2}px at ${x}px ${y}px)`,to:`circle(${Math.hypot(Math.max(x,c.width-x),Math.max(y,c.height-y))+20}px at ${x}px ${y}px)`};};
+ useLayoutEffect(()=>{
+  if(reduce||!card.current?.animate)return;
+  const g=geometry();
+  backdrop.current.animate([{opacity:0,backdropFilter:'blur(0px)'},{opacity:1,backdropFilter:'blur(14px)'}],{duration:900,easing:'ease-out',fill:'both'});
+  card.current.animate([{clipPath:g.from,boxShadow:'0 0 0 #0000'},{clipPath:g.to,boxShadow:'0 30px 120px #000c'}],{duration:1400,easing:EASE_OPEN,fill:'both'});
+  media.current.animate([{transform:'scale(1.35)',filter:'brightness(1.6) saturate(1.4)'},{transform:'scale(1)',filter:'none'}],{duration:2200,easing:EASE_TEXT,fill:'both'});
+  [...copy.current.children].forEach((el,i)=>el.animate([{opacity:0,transform:'translateY(26px)',filter:'blur(6px)'},{opacity:1,transform:'none',filter:'none'}],{duration:800,delay:900+i*140,easing:EASE_TEXT,fill:'both'}));
+ },[]);
+ const close=useCallback(()=>{
+  if(closing.current)return;closing.current=true;
+  if(reduce||!card.current?.animate){onDone();return;}
+  const g=geometry();
+  [...copy.current.children].forEach(el=>el.animate([{opacity:1},{opacity:0,transform:'translateY(12px)'}],{duration:300,easing:'ease-in',fill:'both'}));
+  card.current.animate([{clipPath:g.to},{clipPath:g.from}],{duration:900,delay:150,easing:EASE_OPEN,fill:'both'});
+  backdrop.current.animate([{opacity:1},{opacity:0}],{duration:700,delay:400,easing:'ease-in',fill:'both'}).finished.then(onDone,onDone);
+ },[onDone]);
+ useEffect(()=>{const key=e=>{if(e.key==='Escape')close();};window.addEventListener('keydown',key);return()=>window.removeEventListener('keydown',key);},[close]);
+ const onClose=close;
+ return <div className="flame-spotlight" ref={backdrop} role="dialog" aria-modal="true" aria-labelledby="flame-spotlight-title" onClick={onClose}>
+  <div className="flame-spotlight-card" ref={card} onClick={e=>e.stopPropagation()}>
+   <div className="flame-spotlight-media"><div className="flame-spotlight-frame" ref={media}>{path.video&&!paused?<video autoPlay muted loop playsInline poster={path.image} onLoadedMetadata={e=>{e.currentTarget.currentTime=28;}} onTimeUpdate={e=>{if(e.currentTarget.currentTime>57)e.currentTarget.currentTime=28;}}><source src={path.video} type="video/webm"/></video>:<img src={paused?path.image:path.animation||path.image} alt={`${path.label}: ${path.context}`}/>}</div><span className="flame-spotlight-context">{path.context}</span></div>
+   <div className="flame-spotlight-copy" ref={copy}>
     <span className="home-eyebrow">{path.detail.toUpperCase()}</span>
     <h2 id="flame-spotlight-title">{path.label}</h2>
     <ol>{path.points.map(t=><li key={t}>{t}</li>)}</ol>
@@ -31,6 +52,7 @@ function FlameSpotlight({path,paused,onClose,onAsk}){
     <div className="flame-spotlight-links">{path.related.map(id=>{const s=investigations.find(s=>s.accession===id);return s&&<a key={id} href={`#investigation/${id}`} onClick={onClose}><span>{id} / {s.acronym}</span>{s.title}<ArrowUpRight size={14}/></a>;})}</div>
     <div className="flame-spotlight-actions"><button className="button primary" onClick={()=>{onClose();onAsk(path.question);}}><Sparkles size={15}/>Ask the research guide</button><a className="text-button" href={path.sourceUrl} target="_blank" rel="noreferrer">{path.source}<ArrowUpRight size={13}/></a></div>
    </div>
+   <button className="flame-spotlight-close icon-button" onClick={onClose} aria-label="Close"><X size={18}/></button>
   </div>
  </div>;
 }
@@ -39,7 +61,8 @@ export default function ResearchHome({navigate,onAsk}) {
  const video=useRef(null);
  const [spotlight,setSpotlight]=useState(null);
  const hoverTimer=useRef(0);
- const openSoon=id=>{clearTimeout(hoverTimer.current);hoverTimer.current=setTimeout(()=>setSpotlight(id),450);};
+ const orbRect=el=>el.querySelector('.context-orb')?.getBoundingClientRect();
+ const openSoon=(id,el)=>{clearTimeout(hoverTimer.current);hoverTimer.current=setTimeout(()=>setSpotlight({id,origin:orbRect(el)}),700);};
  const cancelOpen=()=>clearTimeout(hoverTimer.current);
  const closeSpotlight=useCallback(()=>{clearTimeout(hoverTimer.current);setSpotlight(null);},[]);
  useEffect(()=>()=>clearTimeout(hoverTimer.current),[]);
@@ -49,8 +72,8 @@ export default function ResearchHome({navigate,onAsk}) {
  <button className="home-browse-link" onClick={()=>navigate('explore')}>Or explore all 25 investigations<ArrowUpRight size={16}/></button></div>
  <div className="discovery-visual"><div className="discovery-visual-top"><span>OBSERVATION / 01</span><span className="home-live-dot">MICROGRAVITY</span></div><video ref={video} autoPlay={!paused} muted loop playsInline preload="metadata" poster="/media/droplet-flame.jpg" onLoadedMetadata={e=>{e.currentTarget.currentTime=28;}} onTimeUpdate={e=>{if(e.currentTarget.currentTime>57)e.currentTarget.currentTime=28;}} aria-label="NASA FLEX-2 burning droplet in microgravity"><source src="/media/flex-2.webm" type="video/webm"/></video><div className="discovery-video-caption"><div><strong>A different gravity.<br/>A different flame.</strong><span>FLEX-2 · liquid-fuel combustion</span></div><button className="motion-toggle" onClick={()=>setPaused(!paused)} aria-label={paused?'Play NASA footage':'Pause NASA footage'}>{paused?<Play size={17}/>:<Pause size={17}/>}</button></div><a className="discovery-credit" href="https://commons.wikimedia.org/wiki/File:Amazing_Flame_Comes_to_Life_in_Space_Station_Microgravity_Combustion_Science.webm" target="_blank" rel="noreferrer">Footage: NASA Johnson<ArrowUpRight size={12}/></a></div></section>
  <section className="home-proof" aria-label="Research available"><div><strong>25</strong><span>NASA investigations</span></div><div><strong>2,009</strong><span>available source rows</span></div><div className="home-proof-source"><ScanLine size={22}/><span>Follow every finding<br/><strong>back to its source.</strong></span></div></section>
- <section className="context-explorer home-context-explorer" aria-label="Explore how flames change"><div className="eyebrow">EXPLORE HOW FLAMES CHANGE</div><div className="context-options">{paths.map(p=><button className="context-choice" key={p.id} onMouseEnter={()=>openSoon(p.id)} onMouseLeave={cancelOpen} onClick={()=>{cancelOpen();setSpotlight(p.id);}} aria-haspopup="dialog"><span className="context-orb">{paused?<img src={p.image} alt="" loading="lazy"/>:p.video?<video autoPlay muted loop playsInline preload="metadata" poster={p.image} onLoadedMetadata={e=>{e.currentTarget.currentTime=28;}} onTimeUpdate={e=>{if(e.currentTarget.currentTime>57)e.currentTarget.currentTime=28;}} aria-hidden="true"><source src={p.video} type="video/webm"/></video>:<img src={p.animation} alt="" loading="lazy"/>}<span/></span><span><strong>{p.label}</strong><small>{p.detail}</small></span><ArrowRight size={15}/></button>)}</div><p className="media-scope-note">Each scene retains its experimental context. Selecting an application habitat does not turn these images into lunar or Martian data.</p></section>
- {spotlight&&<FlameSpotlight path={paths.find(p=>p.id===spotlight)} paused={paused} onClose={closeSpotlight} onAsk={onAsk}/>}
+ <section className="context-explorer home-context-explorer" aria-label="Explore how flames change"><div className="eyebrow">EXPLORE HOW FLAMES CHANGE</div><div className="context-options">{paths.map(p=><button className="context-choice" key={p.id} onMouseEnter={e=>openSoon(p.id,e.currentTarget)} onMouseLeave={cancelOpen} onClick={e=>{cancelOpen();if(!spotlight)setSpotlight({id:p.id,origin:orbRect(e.currentTarget)});}} aria-haspopup="dialog"><span className="context-orb">{paused?<img src={p.image} alt="" loading="lazy"/>:p.video?<video autoPlay muted loop playsInline preload="metadata" poster={p.image} onLoadedMetadata={e=>{e.currentTarget.currentTime=28;}} onTimeUpdate={e=>{if(e.currentTarget.currentTime>57)e.currentTarget.currentTime=28;}} aria-hidden="true"><source src={p.video} type="video/webm"/></video>:<img src={p.animation} alt="" loading="lazy"/>}<span/></span><span><strong>{p.label}</strong><small>{p.detail}</small></span><ArrowRight size={15}/></button>)}</div><p className="media-scope-note">Each scene retains its experimental context. Selecting an application habitat does not turn these images into lunar or Martian data.</p></section>
+ {spotlight&&<FlameSpotlight key={spotlight.id} path={paths.find(p=>p.id===spotlight.id)} origin={spotlight.origin} paused={paused} onDone={closeSpotlight} onAsk={onAsk}/>}
  <section className="home-featured"><div className="home-section-heading"><div><div className="home-eyebrow">FROM THE RESEARCH COLLECTION</div><h2>Real experiments.<br/>Questions worth exploring.</h2></div><button className="button secondary" onClick={()=>navigate('explore')}>View all investigations<ArrowRight size={16}/></button></div><div className="featured-study-list">{['PSI-98','PSI-25','PSI-68'].map((id,i)=>{const s=investigations.find(s=>s.accession===id);return <a href={`#investigation/${id}`} key={id}><span className="featured-index">0{i+1}</span><div><span className="featured-kicker">{id} / {s.acronym}</span><h3>{s.title}</h3><p>{s.platform} · {s.available_rows} source rows</p></div><ArrowUpRight size={24}/></a>;})}</div></section>
  <div className="home-independent"><strong>flamingo</strong><span>Flame Learning &amp; Analysis in Microgravity: INsights for Gravity-Off missions</span><p>Built with public NASA research. An independent exploration tool; not a safety certification.</p></div></main>;
 }
