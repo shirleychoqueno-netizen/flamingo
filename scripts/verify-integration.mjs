@@ -13,7 +13,7 @@ try{
  const {studies}=await server.ssrLoadModule('/src/data.js');
  const reader=renderToStaticMarkup(React.createElement(DocumentReader,{study:studies[0],initialPage:1,onClose:()=>{}}));
  assert.ok(reader.includes('ORIGINAL DOCUMENT'));assert.ok(reader.includes('Search this PDF'));assert.ok(reader.includes('Close reader'));
- for(const route of ['','#home','#explore','#library','#compare','#saved','#pdfs','#document-saved','#type/Investigation','#study/acme','#study/guide','#investigation/PSI-98','#investigation/PSI-68','#investigation/PSI-60','#investigation/UNKNOWN','#rows','#nasa','#nasa/oxygen/PSI-25']){
+ for(const route of ['','#home','#explore','#explore/investigations','#explore/publications','#library','#compare','#saved','#pdfs','#document-saved','#type/Investigation','#study/acme','#study/guide','#investigation/PSI-98','#investigation/PSI-68','#investigation/PSI-60','#investigation/UNKNOWN','#rows','#nasa','#nasa/oxygen/PSI-25']){
   window.location.hash=route;
   const html=renderToStaticMarkup(React.createElement(App));
   assert.ok(html.includes('Open AI research guide'),route+': missing research-guide entry');
@@ -26,7 +26,9 @@ try{
   assert.deepEqual(leftovers,[],route+': untranslated interface copy');
   if(route==='#nasa')assert.equal((html.match(/class="nasa-catalog-row"/g)||[]).length,25);
   if(route===''){assert.ok(html.includes('Small flames.'));assert.ok(html.includes('ASK YOUR RESEARCH GUIDE'));assert.ok(!html.includes('Full-text PDFs (2)'));}
-  if(route==='#explore'){assert.equal((html.match(/class="investigation-card"/g)||[]).length,25);assert.ok(html.includes('Source rows available'));assert.ok(!html.includes('Reading room'),'#explore: reading-room shortcut removed');assert.ok(html.includes('Find an investigation by title, topic or accession'),'#explore: search keeps an accessible label');}
+  if(route==='#explore'){assert.ok(html.includes('Loading tests from'),'#explore: opens on individual tests');assert.ok(html.includes('class="explore-tabs"'),'#explore: view tabs');}
+  if(route==='#explore/publications')assert.ok((html.match(/class="record-card pub"/g)||[]).length>=20,'#explore/publications: individual publications');
+  if(route==='#explore/investigations'){assert.equal((html.match(/class="investigation-card"/g)||[]).length,25);assert.ok(html.includes('Source rows available'));assert.ok(!html.includes('Reading room'),'#explore: reading-room shortcut removed');assert.ok(html.includes('Find an investigation by title, topic or accession'),'#explore: search keeps an accessible label');}
   if(route==='#library'){assert.equal((html.match(/class="library-study-code"/g)||[]).length,25);assert.ok(html.includes('Curated reading room'));assert.ok(!html.includes('2 incorporated PDFs'));}
   if(route==='#investigation/PSI-68')assert.ok(html.includes('Inventory gap:'));
   if(route==='#investigation/PSI-60')assert.ok(html.includes('No local source table rows'));
