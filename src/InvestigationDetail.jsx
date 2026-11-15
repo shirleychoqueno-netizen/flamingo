@@ -36,11 +36,30 @@ function DetailDashboard({study,saved,onSave,comparing,onCompare,navigate}){
   </section>
  </>;
 }
+const sections=[['investigation-overview','Overview'],['investigation-rows','Source data'],['investigation-files','Files & coverage'],['investigation-publications','Publications']];
+/** Section tabs that highlight the section currently on screen. */
+function SectionNav(){
+ const [active,setActive]=useState(sections[0][0]);
+ const lock=useRef(0);
+ useEffect(()=>{
+  const onScroll=()=>{
+   if(Date.now()<lock.current)return;
+   const line=window.innerHeight*.3;let current=sections[0][0];
+   for(const [id] of sections){const el=document.getElementById(id);if(el&&el.getBoundingClientRect().top<=line)current=id;}
+   if(window.innerHeight+window.scrollY>=document.documentElement.scrollHeight-4)current=sections[sections.length-1][0];
+   setActive(current);
+  };
+  onScroll();window.addEventListener('scroll',onScroll,{passive:true});window.addEventListener('resize',onScroll);
+  return()=>{window.removeEventListener('scroll',onScroll);window.removeEventListener('resize',onScroll);};
+ },[]);
+ const go=id=>{setActive(id);lock.current=Date.now()+900;document.getElementById(id)?.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth',block:'start'});};
+ return <nav className="detail-section-nav" aria-label="Investigation sections">{sections.map(([id,label])=><button key={id} className={active===id?'active':''} aria-current={active===id?'location':undefined} onClick={()=>go(id)}>{label}</button>)}</nav>;
+}
 export default function InvestigationDetail({accession,navigate,saved,onSave,selected,onToggle,onAsk,comparing=[],onCompare}){
  const study=investigations.find(s=>s.accession===accession);
  if(!study)return <main className="utility-page"><h1>Investigation not found</h1><button className="button secondary" onClick={()=>navigate('explore')}>Back to investigations</button></main>;
  return <main className="utility-page investigation-detail"><button className="text-button" onClick={()=>navigate('explore')}><ArrowLeft size={14}/>Explore investigations</button><DetailDashboard study={study} saved={saved} onSave={onSave} comparing={comparing} onCompare={onCompare} navigate={navigate}/>
- <nav className="detail-section-nav" aria-label="Investigation sections">{[['investigation-overview','Overview'],['investigation-rows','Source data'],['investigation-files','Files & coverage'],['investigation-publications','Publications']].map(([id,label])=><button key={id} onClick={()=>document.getElementById(id)?.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth',block:'start'})}>{label}</button>)}</nav><div className="investigation-actions"><button className="button secondary" onClick={()=>onAsk?.()}><Sparkles size={15}/>Ask about this investigation</button><button className="button primary" onClick={()=>navigate(evidenceRoute(study.accession,study.acronym||study.title))}>Search this investigation<ArrowRight size={15}/></button><a className="button secondary" href={study.psi_url} target="_blank" rel="noreferrer">Open NASA source and files<ArrowUpRight size={15}/></a>{study.doi&&<a className="text-button" href={`https://doi.org/${study.doi}`} target="_blank" rel="noreferrer">Investigation DOI<ArrowUpRight size={13}/></a>}</div>
+ <SectionNav/><div className="investigation-actions"><button className="button secondary" onClick={()=>onAsk?.()}><Sparkles size={15}/>Ask about this investigation</button><button className="button primary" onClick={()=>navigate(evidenceRoute(study.accession,study.acronym||study.title))}>Search this investigation<ArrowRight size={15}/></button><a className="button secondary" href={study.psi_url} target="_blank" rel="noreferrer">Open NASA source and files<ArrowUpRight size={15}/></a>{study.doi&&<a className="text-button" href={`https://doi.org/${study.doi}`} target="_blank" rel="noreferrer">Investigation DOI<ArrowUpRight size={13}/></a>}</div>
  <dl id="investigation-overview" className="investigation-facts">{[['Platform',study.platform],['Facility',study.facility],['Study type',study.study_type],['Fuel state',study.fuel_state],['Research axis',study.primary_axis],['Intended application',(study.mission_contexts||[]).join(', ')],['License',study.license]].map(([label,value])=><div key={label}><dt>{label}</dt><dd>{value||'Not recorded in this snapshot'}</dd></div>)}</dl>
  <div className="inline-note"><Info size={15}/><p>Intended applications do not change experimental gravity. Shared metadata or matching units do not establish scientific comparability.</p></div>
  {study.catalog_status!=='complete'&&<p className="nasa-error">Inventory gap: {study.gap_note||'Remote inventory incomplete'}. Available local evidence remains accessible below.</p>}

@@ -73,3 +73,9 @@
 .compare-table thead th .study-orb{width:40px!important;height:40px!important}
 .rowcmp-chip .study-orb{width:40px!important;height:40px!important}
 .study-orb{background:radial-gradient(circle at 35% 30%,color-mix(in srgb,var(--orb) 55%,transparent),color-mix(in srgb,var(--orb) 12%,#05080c) 75%)}.detail-kpis{margin-bottom:26px}
+/* Investigation section tabs: sticky, active one highlighted */
+.app-shell .detail-section-nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;gap:6px;background:#080b10ee;backdrop-filter:blur(12px)}
+.app-shell .detail-section-nav button{position:relative;padding:10px 16px;border-radius:999px;font-size:14.5px;color:#9faab5;transition:color .2s,background .25s}
+.app-shell .detail-section-nav button:hover{background:#151a21;color:#e4e4df}
+.app-shell .detail-section-nav button.active{color:#1a0f08;background:var(--warm);font-weight:600;box-shadow:0 0 22px #ff8a3d44}
+#investigation-overview,#investigation-rows,#investigation-files,#investigation-publications{scroll-margin-top:84px}
