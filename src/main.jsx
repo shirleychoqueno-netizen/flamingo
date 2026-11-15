@@ -7,6 +7,8 @@ import NasaWorkbench from './NasaWorkbench';
 import InvestigationExplorer,{CoverageSummary} from './InvestigationExplorer';
 import InvestigationDetail from './InvestigationDetail';
 import RowComparison from './RowComparison';
+import InvestigationCompare from './InvestigationCompare';
+import {StudyOrb} from './investigation-visuals';
 import {investigations,rowSelection} from './investigation-catalog';
 import ResearchHome from './ResearchHome';
 import ResearchLibrary from './ResearchLibrary';
@@ -30,7 +32,7 @@ const parseRoute = () => {
   const route = window.location.hash.slice(1).split('/');
   let id=route[1];
   try { id=decodeURIComponent(id||''); } catch { id=''; }
-  return { accession:route[2]||'', view: ['home', 'explore', 'study', 'compare', 'saved', 'library', 'type', 'nasa', 'investigation', 'pdfs', 'document-saved', 'rows', 'learn'].includes(route[0]) ? route[0] : 'home', id };
+  return { accession:route[2]||'', view: ['home', 'explore', 'study', 'compare', 'saved', 'library', 'type', 'nasa', 'investigation', 'pdfs', 'document-saved', 'rows', 'learn', 'versus'].includes(route[0]) ? route[0] : 'home', id };
 };
 const save = (key, value) => { try { localStorage.setItem(key, JSON.stringify(value)); } catch {} };
 
@@ -71,6 +73,9 @@ export function App() {
   const [saved, setSaved] = useState(() => load('ignis.saved', []).filter(id => studies.some(s => s.id === id)));
   const [selected, setSelected] = useState(() => load('ignis.selected', []).filter(id => studies.some(s => s.id === id)));
   const [savedInvestigations,setSavedInvestigations]=useState(()=>load('ignis.investigations.saved',[]).filter(id=>investigations.some(s=>s.accession===id)));
+  const [compareInvestigations,setCompareInvestigations]=useState(()=>load('flamingo.compare.investigations',[]).filter(id=>investigations.some(s=>s.accession===id)).slice(0,4));
+  useEffect(()=>{save('flamingo.compare.investigations',compareInvestigations);},[compareInvestigations]);
+  const toggleCompare=id=>setCompareInvestigations(old=>old.includes(id)?old.filter(v=>v!==id):old.length>=4?old:[...old,id]);
   const [selectedRows,setSelectedRows]=useState(()=>load('ignis.rows.selected',[]).filter(id=>typeof id==='string'&&investigations.some(s=>id.startsWith(s.accession+'|'))).slice(0,6));
   const [filterOpen, setFilterOpen] = useState(false);
   const [notice, setNotice] = useState('');
@@ -120,7 +125,7 @@ export function App() {
     <aside className="rail" aria-label="Main navigation">
       <a className="rail-logo" href="#" aria-label="flamingo home"><img src="/flamingo-mark.svg" width="30" height="30" alt="" aria-hidden="true" /></a>
       <div className="rail-group">
-        {[['home', Home, 'Home'], ['explore', Search, 'Explore'], ['rows', Columns2, 'Compare rows'], ['saved', Bookmark, 'Saved'], ['library', Database, 'Library'], ['learn', GraduationCap, 'Aprende']].map(([view, Icon, label]) => <button key={view} className={`rail-link ${route.view === view || view === 'explore' && ['study','type','pdfs','investigation','document-saved'].includes(route.view) ? 'active' : ''}`} onClick={() => navigate(view)} aria-label={label} title={label} aria-current={route.view === view ? 'page' : undefined}><Icon size={20} strokeWidth={1.6} /><span>{label}</span>{view === 'rows' && selectedRows.length > 0 && <b className="rail-count">{selectedRows.length}</b>}</button>)}
+        {[['home', Home, 'Home'], ['explore', Search, 'Explore'], ['rows', Columns2, 'Compare rows'], ['saved', Bookmark, 'Saved'], ['library', Database, 'Library'], ['learn', GraduationCap, 'Aprende']].map(([view, Icon, label]) => <button key={view} className={`rail-link ${route.view === view || view === 'rows' && route.view === 'versus' || view === 'explore' && ['study','type','pdfs','investigation','document-saved'].includes(route.view) ? 'active' : ''}`} onClick={() => navigate(view)} aria-label={label} title={label} aria-current={route.view === view ? 'page' : undefined}><Icon size={20} strokeWidth={1.6} /><span>{label}</span>{view === 'rows' && selectedRows.length > 0 && <b className="rail-count">{selectedRows.length}</b>}</button>)}
       </div>
       <a className="rail-help" href="https://www.spaceappschallenge.org/2026/challenges/flame-in-freefall/" target="_blank" rel="noreferrer" aria-label="Open the Flame in Freefall challenge" title="About the challenge"><CircleHelp size={20} /></a>
       <div className="rail-avatar" title="Local workspace">FL</div>
@@ -132,7 +137,7 @@ export function App() {
         <div className="header-actions"><button className="button secondary compact header-explore-button" onClick={()=>navigate('explore')}>Explore research<ArrowUpRight size={14}/></button><button className="button secondary compact header-documents-button" onClick={()=>navigate('library')}><BookOpen size={15}/><span>Library</span></button></div>
       </header>
 
-      {route.view==='home'?<ResearchHome navigate={navigate} onAsk={openGuide}/> : ['explore','saved'].includes(route.view)?<InvestigationExplorer navigate={navigate} saved={savedInvestigations} onSave={toggleSavedInvestigation} onAsk={openGuide} savedOnly={route.view==='saved'}/> : route.view==='investigation'?<InvestigationDetail key={route.id} accession={route.id} navigate={navigate} saved={savedInvestigations.includes(route.id)} onSave={toggleSavedInvestigation} selected={selectedRows} onToggle={toggleRow} onAsk={openGuide}/> : route.view==='rows'?<RowComparison selected={selectedRows} onRemove={toggleRow} navigate={navigate}/> : route.view === 'nasa' ? <NasaWorkbench key={route.id+'|'+route.accession} initialQuery={route.id} initialAccession={route.accession} selectedRows={selectedRows} onSelectedRowsChange={setSelectedRows}/> : route.view === 'study' && current ? <StudyDashboard key={current.id} study={current} habitat={habitat} saved={saved.includes(current.id)} onSave={() => toggleSaved(current.id)} onBack={() => navigate('pdfs')} onExport={() => exportStudies([current])} selected={selected.includes(current.id)} onCompare={() => toggleSelected(current.id)} />
+      {route.view==='home'?<ResearchHome navigate={navigate} onAsk={openGuide}/> : ['explore','saved'].includes(route.view)?<InvestigationExplorer navigate={navigate} saved={savedInvestigations} onSave={toggleSavedInvestigation} onAsk={openGuide} savedOnly={route.view==='saved'} comparing={compareInvestigations} onCompare={toggleCompare}/> : route.view==='investigation'?<InvestigationDetail key={route.id} accession={route.id} navigate={navigate} saved={savedInvestigations.includes(route.id)} onSave={toggleSavedInvestigation} selected={selectedRows} onToggle={toggleRow} onAsk={openGuide} comparing={compareInvestigations} onCompare={toggleCompare}/> : route.view==='versus'?<InvestigationCompare selected={compareInvestigations} onRemove={toggleCompare} navigate={navigate} onAsk={openGuide}/> : route.view==='rows'?<RowComparison selected={selectedRows} onRemove={toggleRow} navigate={navigate}/> : route.view === 'nasa' ? <NasaWorkbench key={route.id+'|'+route.accession} initialQuery={route.id} initialAccession={route.accession} selectedRows={selectedRows} onSelectedRowsChange={setSelectedRows}/> : route.view === 'study' && current ? <StudyDashboard key={current.id} study={current} habitat={habitat} saved={saved.includes(current.id)} onSave={() => toggleSaved(current.id)} onBack={() => navigate('pdfs')} onExport={() => exportStudies([current])} selected={selected.includes(current.id)} onCompare={() => toggleSelected(current.id)} />
         : route.view === 'compare' ? <Compare selected={selected} onToggle={toggleSelected} onAdd={() => navigate('pdfs')} onExport={() => exportStudies(studies.filter(s => selected.includes(s.id)))} onOpen={id => navigate(`study/${id}`)} />
         : route.view === 'library' ? <ResearchLibrary onOpen={id=>navigate(`study/${id}`)} navigate={navigate}/>
         : route.view === 'learn' ? <Suspense fallback={<main className="utility-page"><p className="nasa-caption" role="status">Cargando Aprende…</p></main>}><LearnHabitat navigate={navigate} onAsk={openGuide}/></Suspense>
@@ -176,7 +181,8 @@ export function App() {
       <footer className="footer"><span>flamingo<span className="footer-separator">/</span>Science for safety in space</span><span>Flame in Freefall <span className="footer-dot">•</span> 2026</span></footer>
     </div>
     {selected.length > 0 && ['pdfs','type','document-saved'].includes(route.view) && <div className="selection-bar"><div><Columns2 size={17} /><strong>{selected.length} {selected.length === 1 ? 'selected study' : 'selected studies'}</strong><button className="text-button" onClick={() => setSelected([])}>Clear</button></div><button className="button primary" onClick={() => navigate('compare')}>Compare selection<ArrowRight size={16} /></button></div>}
-    {selectedRows.length>0&&['explore','saved','investigation','library'].includes(route.view)&&<div className="catalog-selection-bar"><strong>{selectedRows.length}/6 original rows selected</strong><button className="text-button" onClick={()=>setSelectedRows([])}>Clear</button><button className="button primary" disabled={selectedRows.length<2} onClick={()=>navigate('rows')}>Compare original rows<Columns2 size={15}/></button></div>}
+    {compareInvestigations.length>0&&['explore','saved','investigation','library'].includes(route.view)&&<div className="compare-tray" role="region" aria-label="Investigations marked for comparison"><div className="compare-tray-orbs">{compareInvestigations.map(id=><StudyOrb key={id} study={investigations.find(s=>s.accession===id)} size={34}/>)}</div><strong>{compareInvestigations.length} to compare<small>{compareInvestigations.length<2?'Mark one more':'Up to 4 investigations'}</small></strong><button className="text-button" onClick={()=>setCompareInvestigations([])}>Clear</button><button className="button primary" disabled={compareInvestigations.length<2} onClick={()=>navigate('versus')}>Compare<Columns2 size={15}/></button></div>}
+    {selectedRows.length>0&&compareInvestigations.length===0&&['explore','saved','investigation','library'].includes(route.view)&&<div className="catalog-selection-bar"><strong>{selectedRows.length}/6 original rows selected</strong><button className="text-button" onClick={()=>setSelectedRows([])}>Clear</button><button className="button primary" disabled={selectedRows.length<2} onClick={()=>navigate('rows')}>Compare original rows<Columns2 size={15}/></button></div>}
     <button className="guide-fab" onClick={()=>openGuide()} aria-label="Open AI research guide"><Sparkles size={21}/><span>Research guide</span></button>
     {guideSeed.id>0&&<Suspense fallback={<p className="guide-opening" role="status">Opening research guide…</p>}><ResearchAssistant open={guideOpen} onClose={()=>setGuideOpen(false)} seed={guideSeed} navigate={navigate} accession={route.view==='investigation'?route.id:route.view==='nasa'?route.accession:''}/></Suspense>}
     <div className={`toast ${notice ? 'show' : ''}`} role="status">{notice && <><Check size={16} />{notice}</>}</div>
