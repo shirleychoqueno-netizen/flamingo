@@ -117,7 +117,7 @@ export function App() {
 
   return <div className="app-shell" data-theme={theme}>
     <aside className="rail" aria-label="Main navigation">
-      <a className="rail-logo" href="#" aria-label="flamingo home"><Flame size={25} strokeWidth={1.6} /></a>
+      <a className="rail-logo" href="#" aria-label="flamingo home"><img src="/flamingo-mark.svg" width="30" height="30" alt="" aria-hidden="true" /></a>
       <div className="rail-group">
         {[['home', Home, 'Home'], ['explore', Search, 'Explore'], ['rows', Columns2, 'Compare rows'], ['saved', Bookmark, 'Saved'], ['library', Database, 'Library']].map(([view, Icon, label]) => <button key={view} className={`rail-link ${route.view === view || view === 'explore' && ['study','type','pdfs','investigation','document-saved'].includes(route.view) ? 'active' : ''}`} onClick={() => navigate(view)} aria-label={label} title={label} aria-current={route.view === view ? 'page' : undefined}><Icon size={20} strokeWidth={1.6} /><span>{label}</span>{view === 'rows' && selectedRows.length > 0 && <b className="rail-count">{selectedRows.length}</b>}</button>)}
       </div>
