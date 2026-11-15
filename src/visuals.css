@@ -62,4 +62,14 @@
 @keyframes card-rise{from{opacity:0;transform:translateY(24px)}}
 @media(max-width:1100px){.detail-kpis{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media(max-width:700px){.detail-hero{grid-template-columns:1fr;gap:18px;padding:24px 20px}.detail-hero-orb .study-orb{width:84px!important;height:84px!important}.detail-kpis{grid-template-columns:1fr 1fr}.detail-charts{grid-template-columns:1fr}.viz-kpi strong{font-size:26px}}
-@media(prefers-reduced-motion:reduce){.detail-hero,.detail-hero:after,.detail-kpis .viz-kpi{animation:none}}
+@media(prefers-reduced-motion:reduce){.detail-hero,.detail-hero:after,.detail-kpis .viz-kpi{animation:none}}/* Bigger, coloured icons */
+.viz-chip{--chip:var(--warm);gap:8px;padding:4px 12px 4px 4px;font-size:13px;border-color:color-mix(in srgb,var(--chip) 35%,#2b3039);background:color-mix(in srgb,var(--chip) 9%,#0b0e12)}
+.viz-chip>.viz-chip-icon{display:grid;place-items:center;width:28px;height:28px;border-radius:50%;color:#0b0e12;background:var(--chip);box-shadow:0 0 14px color-mix(in srgb,var(--chip) 45%,transparent)}
+.viz-chip>.viz-chip-icon svg{color:#0b0e12}
+.investigation-card .study-id .study-orb{width:56px!important;height:56px!important}
+.investigation-card .study-id .study-orb svg{width:26px;height:26px}
+.investigation-card .study-id .acronym{font-size:15px}
+.compare-tray-orbs .study-orb{width:42px!important;height:42px!important}
+.compare-table thead th .study-orb{width:40px!important;height:40px!important}
+.rowcmp-chip .study-orb{width:40px!important;height:40px!important}
+.study-orb{background:radial-gradient(circle at 35% 30%,color-mix(in srgb,var(--orb) 55%,transparent),color-mix(in srgb,var(--orb) 12%,#05080c) 75%)}

@@ -10,15 +10,15 @@ export const fuelLook = {
  Aerosol: {Icon: CloudFog, color: '#b5a6ff', label: 'Aerosol'},
 };
 export const platformLook = {
- ISS: {Icon: Orbit, label: 'International Space Station'},
- Cygnus: {Icon: Rocket, label: 'Cygnus cargo vehicle'},
- Ground: {Icon: Building2, label: 'Ground laboratory'},
+ ISS: {Icon: Orbit, color: '#7aa7ff', label: 'International Space Station'},
+ Cygnus: {Icon: Rocket, color: '#ffc857', label: 'Cygnus cargo vehicle'},
+ Ground: {Icon: Building2, color: '#9be37a', label: 'Ground laboratory'},
 };
 export const axisLook = {
- Prevention: {Icon: ShieldCheck, label: 'Prevention'},
- Suppression: {Icon: FireExtinguisher, label: 'Suppression'},
- Detection: {Icon: Radar, label: 'Detection'},
- Fundamental: {Icon: Atom, label: 'Fundamental science'},
+ Prevention: {Icon: ShieldCheck, color: '#4fd1a5', label: 'Prevention'},
+ Suppression: {Icon: FireExtinguisher, color: '#ff6b6b', label: 'Suppression'},
+ Detection: {Icon: Radar, color: '#c89bff', label: 'Detection'},
+ Fundamental: {Icon: Atom, color: '#5ad7ff', label: 'Fundamental science'},
 };
 export const lookFor = study => fuelLook[study.fuel_state] || {Icon: FlaskConical, color: '#c9d1d9', label: study.fuel_state || 'Not specified'};
 
@@ -30,8 +30,8 @@ export function StudyOrb({study, size = 64}) {
 
 export function Chip({look, value}) {
  if (!look) return <span className="viz-chip">{value || 'Not recorded'}</span>;
- const {Icon, label} = look;
- return <span className="viz-chip"><Icon size={14}/>{value || label}</span>;
+ const {Icon, label, color = 'var(--warm)'} = look;
+ return <span className="viz-chip" style={{'--chip': color}}><span className="viz-chip-icon"><Icon size={16} strokeWidth={2}/></span>{value || label}</span>;
 }
 
 /** Count up to a number once it scrolls into view. */

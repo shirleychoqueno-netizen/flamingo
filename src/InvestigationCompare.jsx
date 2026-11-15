@@ -53,7 +53,7 @@ export default function InvestigationCompare({selected, onRemove, navigate, onAs
     const {color, label} = lookFor(s);
     return <article key={s.accession} className="compare-card" style={{'--accent': color, animationDelay: `${i * 120}ms`}}>
      <button className="icon-button compare-remove" onClick={() => onRemove(s.accession)} aria-label={`Remove ${s.accession} from comparison`}><X size={15}/></button>
-     <StudyOrb study={s} size={72}/>
+     <StudyOrb study={s} size={96}/>
      <span className="compare-code">{s.accession} / {s.acronym || 'NASA PSI'}</span>
      <h3><a href={`#investigation/${s.accession}`}>{s.title}</a></h3>
      <div className="compare-chips"><Chip look={platformLook[s.platform]} value={s.platform}/><Chip look={fuelLook[s.fuel_state]} value={label}/>{s.primary_axis && <Chip look={axisLook[s.primary_axis]} value={s.primary_axis}/>}</div>

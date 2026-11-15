@@ -1,5 +1,5 @@
 import React, {useMemo, useState} from 'react';
-import {ArrowUpRight, Info, MousePointerClick, RotateCcw, Sparkles, Layers3, Gauge, FlaskConical, Expand, Tags, Box, Flame, Siren, CircleHelp as HelpCircle, Play, Pause} from 'lucide-react';
+import {ArrowUpRight, Info, MousePointerClick, RotateCcw, Sparkles, Layers3, Gauge, FlaskConical, Expand, Tags, Box, Flame, Siren, CircleHelp as HelpCircle, Play, Pause, X, ArrowDown} from 'lucide-react';
 import {learnHabitats, learnDisclaimer} from './learn-habitats';
 import {investigations} from './investigation-catalog';
 import HabitatViewer from './HabitatViewer';
@@ -14,6 +14,25 @@ const modes = [
  ['mission', Siren, 'Misión', '¡Humo en el módulo!'],
 ];
 
+const firstSentence = t => (t || '').split(/(?<=[.!?:])\s/)[0];
+
+/** Short info shown inside the 3D view: three quick facts for students. */
+function QuickCard({component, index, onClose, onMore}) {
+ const [cond, value] = component.conditions[0] || [];
+ return <div className="quick-card">
+  <button className="quick-card-close" onClick={onClose} aria-label="Ocultar tarjeta"><X size={14}/></button>
+  <span className="quick-card-index">{index + 1}</span>
+  <strong className="quick-card-title">{component.name}</strong>
+  <p>{firstSentence(component.what)}</p>
+  <ul>
+   <li><span className="qc-icon qc-mat"><Layers3 size={14}/></span><span><b>Hecho de</b>{component.materials.slice(0, 2).map(m => m[0]).join(' · ')}</span></li>
+   {cond && <li><span className="qc-icon qc-env"><Gauge size={14}/></span><span><b>{cond}</b>{value}</span></li>}
+   {component.fire[0] && <li><span className="qc-icon qc-fire"><Flame size={14}/></span><span><b>¿Y el fuego?</b>{firstSentence(component.fire[0])}</span></li>}
+  </ul>
+  <button className="quick-card-more" onClick={onMore}>Ver más<ArrowDown size={14}/></button>
+ </div>;
+}
+
 function HabitatExplorer({onAsk}) {
  const [habitatId, setHabitatId] = useState('station');
  const habitat = learnHabitats.find(h => h.id === habitatId);
@@ -26,15 +45,18 @@ function HabitatExplorer({onAsk}) {
  const index = habitat.components.indexOf(component);
  const hovered = habitat.components.find(c => c.id === hoveredId);
  const related = useMemo(() => component.related.map(id => byAccession[id]).filter(Boolean), [component]);
- const chooseHabitat = id => { const next = learnHabitats.find(h => h.id === id); setHabitatId(id); setSelectedId(next.components[0].id); setHoveredId(null); setExploded(false); };
+ const [showCard, setShowCard] = useState(true);
+ const select = id => { setSelectedId(id); setShowCard(true); };
+ const chooseHabitat = id => { const next = learnHabitats.find(h => h.id === id); setHabitatId(id); setSelectedId(next.components[0].id); setHoveredId(null); setExploded(false); setShowCard(true); };
 
  return <>
   <div className="learn-habitat-tabs" role="tablist" aria-label="Elige un hábitat">
    {learnHabitats.map(h => <button key={h.id} role="tab" aria-selected={h.id === habitatId} className={h.id === habitatId ? 'active' : ''} onClick={() => chooseHabitat(h.id)}><small>{h.kind}</small><strong>{h.name}</strong></button>)}
   </div>
-  <section className="learn-layout">
+  <section className="learn-layout learn-layout-wide">
    <div className="learn-stage">
-    <HabitatViewer habitatId={habitatId} components={habitat.components} selected={component.id} onSelect={setSelectedId} onHover={setHoveredId} exploded={exploded} showLabels={labels} resetToken={resetToken}/>
+    <HabitatViewer habitatId={habitatId} components={habitat.components} selected={component.id} onSelect={select} onHover={setHoveredId} exploded={exploded} showLabels={labels} resetToken={resetToken}
+     callout={showCard && <QuickCard component={component} index={index} onClose={() => setShowCard(false)} onMore={() => document.getElementById('learn-detail')?.scrollIntoView({behavior: 'smooth', block: 'start'})}/>}/>
     <div className="learn-stage-hint"><MousePointerClick size={14}/>{hovered ? hovered.name : 'Arrastra para girar · rueda para acercar · toca una parte'}</div>
     <div className="learn-stage-tools">
      <button className={`learn-tool ${exploded ? 'active' : ''}`} onClick={() => setExploded(v => !v)} aria-pressed={exploded}><Expand size={15}/>{exploded ? 'Unir partes' : 'Separar partes'}</button>
@@ -43,12 +65,12 @@ function HabitatExplorer({onAsk}) {
     </div>
     <dl className="learn-environment">{habitat.environment.map(([label, value]) => <div key={label}><dt>{label}</dt><dd>{value}</dd></div>)}</dl>
    </div>
+   <div className="learn-component-list learn-component-strip" role="listbox" aria-label="Partes del hábitat">
+    {habitat.components.map((c, i) => <button key={c.id} role="option" aria-selected={c.id === component.id} className={c.id === component.id ? 'active' : ''} onClick={() => select(c.id)} onMouseEnter={() => setHoveredId(c.id)} onMouseLeave={() => setHoveredId(null)}><b>{i + 1}</b>{c.name}</button>)}
+   </div>
 
-   <aside className="learn-panel" aria-live="polite">
+   <aside className="learn-panel learn-details" aria-live="polite" id="learn-detail">
     <p className="learn-intro">{habitat.intro}</p>
-    <div className="learn-component-list" role="listbox" aria-label="Partes del hábitat">
-     {habitat.components.map((c, i) => <button key={c.id} role="option" aria-selected={c.id === component.id} className={c.id === component.id ? 'active' : ''} onClick={() => setSelectedId(c.id)} onMouseEnter={() => setHoveredId(c.id)} onMouseLeave={() => setHoveredId(null)}><b>{i + 1}</b>{c.name}</button>)}
-    </div>
     <article className="learn-component" key={component.id}>
      <span className="learn-kicker">{habitat.name} · parte {index + 1}</span>
      <h2>{component.name}</h2>

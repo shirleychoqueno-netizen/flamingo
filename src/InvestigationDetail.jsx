@@ -25,7 +25,7 @@ function DetailDashboard({study,saved,onSave,comparing,onCompare,navigate}){
  const isComparing=comparing.includes(study.accession);
  return <>
   <section className="detail-hero" style={{'--accent':color}}>
-   <div className="detail-hero-orb"><StudyOrb study={study} size={128}/></div>
+   <div className="detail-hero-orb"><StudyOrb study={study} size={160}/></div>
    <div className="detail-hero-copy">
     <div className="home-eyebrow"><span/>{study.accession} · {study.acronym||'NASA PSI'}</div>
     <h1>{study.title}</h1>

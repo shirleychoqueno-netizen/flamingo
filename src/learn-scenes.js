@@ -110,6 +110,30 @@ const tex = {
   g.fillStyle = '#4a4f55'; for (let x = 0; x < w; x += 16) { g.fillRect(x, 0, 6, h); }
   g.fillStyle = '#7c8086'; for (let x = 8; x < w; x += 32) g.fillRect(x, 10, 3, h - 20);
  }, {repeat: [6, 1]}),
+ regolithBump: () => canvasTexture('regolithBump', 512, 512, (g, w, h) => {
+  const img = g.createImageData(w, h);
+  for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
+   let c = fbm(x / 26, y / 26, 41, 5) * 170 + hash(x, y, 9) * 85;
+   const i = (y * w + x) * 4; img.data[i] = img.data[i + 1] = img.data[i + 2] = c; img.data[i + 3] = 255;
+  }
+  g.putImageData(img, 0, 0);
+ }, {repeat: [14, 14], srgb: false}),
+ clothBump: () => canvasTexture('clothBump', 256, 256, (g, w, h) => {
+  const img = g.createImageData(w, h);
+  for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
+   const weave = ((x >> 1) + (y >> 1)) % 2 ? 150 : 110, c = weave + (fbm(x / 30, y / 30, 5, 3) - .5) * 120;
+   const i = (y * w + x) * 4; img.data[i] = img.data[i + 1] = img.data[i + 2] = c; img.data[i + 3] = 255;
+  }
+  g.putImageData(img, 0, 0);
+ }, {repeat: [24, 8], srgb: false}),
+ foilBump: () => canvasTexture('foilBump', 512, 512, (g, w, h) => {
+  const img = g.createImageData(w, h);
+  for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
+   const c = Math.abs(fbm(x / 18, y / 18, 77, 5) - .5) * 510;
+   const i = (y * w + x) * 4; img.data[i] = img.data[i + 1] = img.data[i + 2] = c; img.data[i + 3] = 255;
+  }
+  g.putImageData(img, 0, 0);
+ }, {repeat: [3, 2], srgb: false}),
  window: () => canvasTexture('window', 128, 128, (g, w, h) => {
   const grad = g.createLinearGradient(0, 0, w, h); grad.addColorStop(0, '#2b5277'); grad.addColorStop(.5, '#0d1d2e'); grad.addColorStop(1, '#3a6f9e');
   g.fillStyle = grad; g.fillRect(0, 0, w, h);
@@ -121,16 +145,16 @@ const tex = {
 const std = (o) => new THREE.MeshStandardMaterial({roughness: .6, metalness: .15, ...o});
 const phys = (o) => new THREE.MeshPhysicalMaterial({roughness: .5, metalness: .1, ...o});
 const M = {
- beta: () => std({map: tex.betaCloth(), roughness: .85, metalness: 0}),
+ beta: () => std({map: tex.betaCloth(), bumpMap: tex.clothBump(), bumpScale: .9, roughness: .85, metalness: 0}),
  interior: () => std({map: tex.interiorPanel(), roughness: .55, metalness: .25, side: THREE.BackSide}),
  aluminum: () => std({color: '#b8c0c8', roughness: .35, metalness: .85}),
  darkMetal: () => std({color: '#3b4148', roughness: .45, metalness: .7}),
  handrail: () => std({color: '#e6b422', roughness: .45, metalness: .3}),
  solar: () => std({map: tex.solarCells(), roughness: .25, metalness: .6, side: THREE.DoubleSide}),
- foil: () => std({map: tex.goldFoil(), color: '#ffffff', roughness: .32, metalness: 1}),
+ foil: () => std({map: tex.goldFoil(), bumpMap: tex.foilBump(), bumpScale: 2.2, color: '#ffffff', roughness: .28, metalness: 1}),
  white: () => std({color: '#eef0f2', roughness: .55, metalness: .05}),
  fabric: (color) => std({color, roughness: .95, metalness: 0}),
- regolith: () => std({map: tex.regolith(), color: '#a6a39d', roughness: 1, metalness: 0}),
+ regolith: () => std({map: tex.regolith(), bumpMap: tex.regolithBump(), bumpScale: 3, color: '#a6a39d', roughness: 1, metalness: 0}),
  glass: () => phys({map: tex.window(), roughness: .05, metalness: .2, clearcoat: 1, clearcoatRoughness: .05}),
  rubber: () => std({map: tex.tread(), roughness: .9, metalness: .1}),
  emissive: (color, intensity = 2) => std({color, emissive: color, emissiveIntensity: intensity, roughness: .4}),
@@ -253,23 +277,79 @@ export function buildStation(root) {
   const fan = new THREE.Mesh(new THREE.CircleGeometry(1.4, 24, Math.PI * .1, Math.PI * 1.8), M.solar());
   fan.position.set(L / 2 + 5.6, 0, z * 3.6); fan.rotation.set(0, 0, 0); fan.castShadow = true; fan.userData.component = 'cargo'; b.comp('cargo').add(fan);
  }
- return {groups: b.groups, camera: [7.5, 3.6, 11], target: [.6, 0, -.6], sun: [20, 18, 22]};
+ // Exterior detail: cupola, antenna, greebles and a spacewalking astronaut.
+ b.add('hull', new THREE.SphereGeometry(.7, 32, 16, 0, Math.PI * 2, 0, Math.PI / 2), M.glass(), [-1.4, -R - .05, -.6], [Math.PI, 0, 0]);
+ b.add('hull', new THREE.CylinderGeometry(.75, .75, .25, 32), M.aluminum(), [-1.4, -R + .05, -.6]);
+ b.add('hull', new THREE.CylinderGeometry(.03, .03, 1.4, 8), M.aluminum(), [2.6, R + .9, .3]);
+ b.add('hull', new THREE.SphereGeometry(.45, 24, 12, 0, Math.PI * 2, 0, Math.PI / 2.4), std({color: '#e9ecef', roughness: .3, metalness: .4, side: THREE.DoubleSide}), [2.6, R + 1.6, .3], [Math.PI * .8, 0, 0]);
+ const gr = rng(5);
+ for (let i = 0; i < 26; i++) { const ang = Math.PI * (.75 + gr() * 1.15), x = -3.8 + gr() * 7.6; b.add('hull', new RoundedBoxGeometry(.18 + gr() * .3, .08, .14 + gr() * .25, 2, .02), gr() > .5 ? M.aluminum() : M.white(), [x, Math.sin(ang) * (R + .05), Math.cos(ang) * (R + .05)], [Math.PI / 2 - ang, 0, 0]); }
+ astronaut(root, [3.2, R + 1.1, 1.6], -.6, 'float');
+ return {groups: b.groups, camera: [6.4, 3, 9.2], target: [.8, 0, -.4], sun: [20, 18, 22]};
 }
 
 /* ---------- Lunar base ---------- */
-function lunarTerrain(root, size = 120, seg = 220) {
+const craters = [[-18, -12, 6], [22, 18, 4], [26, -22, 9], [-24, 24, 5], [8, -32, 7], [-38, -2, 8], [36, 4, 5], [14, 9, 1.6], [-11, 13, 1.2], [9, -12, 1.4]];
+function terrainHeight(x, z) {
+ const d0 = Math.hypot(x, z);
+ let y = (fbm(x / 18, z / 18, 4, 5) - .5) * 2.2 + (fbm(x / 4, z / 4, 8, 3) - .5) * .25;
+ y *= Math.min(1, Math.max(0, (d0 - 9) / 10));
+ y += (fbm(x / 1.6, z / 1.6, 12, 2) - .5) * .06;
+ for (const [cx, cz, r] of craters) { const d = Math.hypot(x - cx, z - cz) / r; if (d < 1.4) y += d < 1 ? -(1 - d * d) * r * .22 : (1.4 - d) * r * .2; }
+ return y;
+}
+function lunarTerrain(root, size = 120, seg = 260) {
  const g = new THREE.PlaneGeometry(size, size, seg, seg); g.rotateX(-Math.PI / 2);
  const p = g.attributes.position;
- const craters = [[-18, -12, 6], [22, 18, 4], [26, -22, 9], [-24, 24, 5], [8, -32, 7], [-38, -2, 8], [36, 4, 5]];
- for (let i = 0; i < p.count; i++) {
-  const x = p.getX(i), z = p.getZ(i), d0 = Math.hypot(x, z);
-  let y = (fbm(x / 18, z / 18, 4, 5) - .5) * 2.2 + (fbm(x / 4, z / 4, 8, 3) - .5) * .25;
-  y *= Math.min(1, Math.max(0, (d0 - 9) / 10));
-  for (const [cx, cz, r] of craters) { const d = Math.hypot(x - cx, z - cz) / r; if (d < 1.4) y += d < 1 ? -(1 - d * d) * r * .22 : (1.4 - d) * r * .2; }
-  p.setY(i, y);
- }
+ for (let i = 0; i < p.count; i++) p.setY(i, terrainHeight(p.getX(i), p.getZ(i)));
  g.computeVertexNormals();
  const m = new THREE.Mesh(g, M.regolith()); m.receiveShadow = true; root.add(m);
+ rocks(root, size);
+}
+/** Scattered boulders and pebbles (instanced) for scale and realism. */
+function rocks(root, size) {
+ const geo = new THREE.IcosahedronGeometry(1, 1);
+ const gp = geo.attributes.position;
+ for (let i = 0; i < gp.count; i++) { const v = new THREE.Vector3().fromBufferAttribute(gp, i); v.multiplyScalar(.75 + hash(v.x * 9, v.y * 9 + v.z * 5, 3) * .45); gp.setXYZ(i, v.x, v.y * .7, v.z); }
+ geo.computeVertexNormals();
+ const r = rng(31), count = 420;
+ const mesh = new THREE.InstancedMesh(geo, std({map: tex.regolith(), bumpMap: tex.regolithBump(), bumpScale: 2, color: '#8f8a83', roughness: 1, metalness: 0, flatShading: true}), count);
+ const m = new THREE.Matrix4(), q = new THREE.Quaternion(), sc = new THREE.Vector3(), pos = new THREE.Vector3();
+ let n = 0;
+ for (let i = 0; i < count * 3 && n < count; i++) {
+  const x = (r() - .5) * size * .8, z = (r() - .5) * size * .8;
+  if (Math.hypot(x, z) < 7.5) continue; // keep the work area clear
+  const big = r() < .08, s = big ? .5 + r() * 1.1 : .06 + r() * .28;
+  pos.set(x, terrainHeight(x, z) + s * .25, z);
+  q.setFromEuler(new THREE.Euler(r() * 3, r() * 3, r() * 3));
+  sc.set(s * (.8 + r() * .5), s, s * (.8 + r() * .5));
+  m.compose(pos, q, sc); mesh.setMatrixAt(n++, m);
+ }
+ mesh.count = n; mesh.castShadow = true; mesh.receiveShadow = true;
+ root.add(mesh);
+}
+/** A spacesuited astronaut for scale (not selectable). */
+function astronaut(root, position, rotY = 0, pose = 'stand') {
+ const a = new THREE.Group();
+ const suit = std({color: '#f2f1ec', roughness: .75, metalness: 0});
+ const dark = std({color: '#4a4f57', roughness: .6, metalness: .3});
+ const visor = new THREE.MeshPhysicalMaterial({color: '#d9a640', metalness: 1, roughness: .08, clearcoat: 1});
+ const part = (geo, mat, p, r = [0, 0, 0]) => { const m = new THREE.Mesh(geo, mat); m.position.set(...p); m.rotation.set(...r); m.castShadow = true; m.receiveShadow = true; a.add(m); return m; };
+ part(new THREE.CapsuleGeometry(.26, .5, 6, 16), suit, [0, 1.05, 0]);
+ part(new RoundedBoxGeometry(.5, .62, .28, 3, .06), suit, [0, 1.18, -.26]);
+ part(new THREE.SphereGeometry(.22, 24, 16), suit, [0, 1.62, 0]);
+ part(new THREE.SphereGeometry(.17, 24, 16, Math.PI * .05, Math.PI * .9, Math.PI * .25, Math.PI * .45), visor, [0, 1.62, .06]);
+ part(new THREE.BoxGeometry(.3, .16, .06), dark, [0, 1.2, .25]);
+ const swing = pose === 'walk' ? .35 : pose === 'float' ? .6 : .1;
+ for (const s of [-1, 1]) {
+  part(new THREE.CapsuleGeometry(.09, .42, 4, 10), suit, [s * .34, 1.12, 0], [swing * s, 0, s * .25]);
+  part(new THREE.CapsuleGeometry(.11, .5, 4, 10), suit, [s * .13, .42, 0], [-swing * s, 0, 0]);
+  part(new RoundedBoxGeometry(.18, .12, .3, 2, .04), dark, [s * .13, .07, .05]);
+ }
+ a.position.set(...position); a.rotation.y = rotY;
+ if (pose === 'float') a.rotation.z = .5;
+ root.add(a);
+ return a;
 }
 
 export function buildLunar(root) {
@@ -319,7 +399,11 @@ export function buildLunar(root) {
  for (let i = 0; i < bp.count; i++) { const x = bp.getX(i), y = bp.getY(i); bp.setZ(i, bp.getZ(i) * .55 + (fbm(x / 2, y / 2, 3, 3) - .5) * .6); }
  bermGeo.computeVertexNormals();
  b.add('shielding', bermGeo, M.regolith(), [0, -.2, 0], [Math.PI / 2, 0, -Math.PI * .95]);
- return {groups: b.groups, camera: [13, 8.5, 15], target: [-.5, 1.8, 1], ground: true, sun: [-30, 14, 20]};
+ // Warm interior light through the windows and astronauts for scale.
+ for (let i = 0; i < 3; i++) b.add('habitat', new THREE.CircleGeometry(.15, 24), M.emissive('#ffcf8a', 2.2), [-1.5 + i * 1.5, 2.6, 1.625]);
+ astronaut(root, [-7.2, 0, 1.4], .9, 'walk');
+ astronaut(root, [-5.6, 0, 3.1], 2.4, 'stand');
+ return {groups: b.groups, camera: [10.5, 6, 12.5], target: [-.8, 1.8, 1], ground: true, sun: [-30, 14, 20]};
 }
 
 /* ---------- Pressurized rover ---------- */
@@ -366,7 +450,8 @@ export function buildRover(root) {
  b.add('lifesupport', new THREE.CylinderGeometry(.03, .03, .7, 8), M.aluminum(), [-1.5, 3.8, .5]);
  b.add('lifesupport', new THREE.SphereGeometry(.3, 24, 12, 0, Math.PI * 2, 0, Math.PI / 2.2), std({color: '#e9ecef', roughness: .3, metalness: .4, side: THREE.DoubleSide}), [-1.5, 4.15, .5], [Math.PI, 0, 0]);
  for (const z of [-.7, .7]) b.add(null, new THREE.CylinderGeometry(.12, .12, .08, 20), M.emissive('#fff6df', 3), [1.95, 1.3, z], [0, 0, Math.PI / 2]);
- return {groups: b.groups, camera: [7.5, 4.6, 7.8], target: [0, 1.8, 0], ground: true, sun: [25, 16, 18]};
+ astronaut(root, [-3.6, 0, 2.6], -1.9, 'walk');
+ return {groups: b.groups, camera: [6.4, 3.4, 7.2], target: [-.2, 1.7, .3], ground: true, sun: [25, 16, 18]};
 }
 
 export const builders = {station: buildStation, lunar: buildLunar, rover: buildRover};
