@@ -18,10 +18,6 @@ function SourceRows({study,selected,onToggle,navigate}){
 const coverageLabels={source_table_row:'Source table rows',workbook_cached_cell:'Workbook cells',document_paragraph:'Document excerpts',investigation_metadata:'Metadata'};
 function DetailDashboard({study,saved,onSave,comparing,onCompare,navigate}){
  const {color,label}=lookFor(study);
- const coverage=Object.entries(study.coverage||{}).filter(([,v])=>v>0);
- const covMax=Math.max(1,...coverage.map(([,v])=>v));
- const exts=(study.assets_by_ext||[]).slice().sort((a,b)=>b[1]-a[1]).slice(0,5);
- const extMax=Math.max(1,...exts.map(([,v])=>v));
  const isComparing=comparing.includes(study.accession);
  return <>
   <section className="detail-hero" style={{'--accent':color}}>
@@ -45,16 +41,12 @@ function DetailDashboard({study,saved,onSave,comparing,onCompare,navigate}){
    <Kpi Icon={HardDrive} value={(study.remote_bytes||0)/1e9} decimals={1} suffix=" GB" label="Remote data" hint="Declared size, not downloaded"/>
    <Kpi Icon={BookOpen} value={study.n_publications||0} label="Publications" hint="Bibliographic references"/>
   </section>
-  <section className="detail-charts">
-   <div className="detail-chart"><h3><Layers size={16}/>What is indexed</h3>{coverage.length?coverage.map(([k,v])=><Meter key={k} label={coverageLabels[k]||k} value={v} max={covMax} color={color}/>):<p className="nasa-caption">No indexed fragments in this snapshot.</p>}</div>
-   <div className="detail-chart"><h3><Files size={16}/>NASA file types</h3>{exts.length?exts.map(([ext,v])=><Meter key={ext} label={ext.toUpperCase()} value={v} max={extMax}/>):<p className="nasa-caption">No remote file inventory.</p>}</div>
-  </section>
  </>;
 }
 export default function InvestigationDetail({accession,navigate,saved,onSave,selected,onToggle,onAsk,comparing=[],onCompare}){
  const study=investigations.find(s=>s.accession===accession);
  if(!study)return <main className="utility-page"><h1>Investigation not found</h1><button className="button secondary" onClick={()=>navigate('explore')}>Back to investigations</button></main>;
- return <main className="utility-page investigation-detail"><button className="text-button" onClick={()=>navigate('explore')}><ArrowLeft size={14}/>Explore investigations</button><DetailDashboard study={study} saved={saved} onSave={onSave} comparing={comparing} onCompare={onCompare} navigate={navigate}/><CoverageBadges study={study}/>
+ return <main className="utility-page investigation-detail"><button className="text-button" onClick={()=>navigate('explore')}><ArrowLeft size={14}/>Explore investigations</button><DetailDashboard study={study} saved={saved} onSave={onSave} comparing={comparing} onCompare={onCompare} navigate={navigate}/>
  <nav className="detail-section-nav" aria-label="Investigation sections">{[['investigation-overview','Overview'],['investigation-rows','Source data'],['investigation-files','Files & coverage'],['investigation-publications','Publications']].map(([id,label])=><button key={id} onClick={()=>document.getElementById(id)?.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth',block:'start'})}>{label}</button>)}</nav><div className="investigation-actions"><button className="button secondary" onClick={()=>onAsk?.()}><Sparkles size={15}/>Ask about this investigation</button><button className="button primary" onClick={()=>navigate(evidenceRoute(study.accession,study.acronym||study.title))}>Search this investigation<ArrowRight size={15}/></button><a className="button secondary" href={study.psi_url} target="_blank" rel="noreferrer">Open NASA source and files<ArrowUpRight size={15}/></a>{study.doi&&<a className="text-button" href={`https://doi.org/${study.doi}`} target="_blank" rel="noreferrer">Investigation DOI<ArrowUpRight size={13}/></a>}</div>
  <dl id="investigation-overview" className="investigation-facts">{[['Platform',study.platform],['Facility',study.facility],['Study type',study.study_type],['Fuel state',study.fuel_state],['Research axis',study.primary_axis],['Intended application',(study.mission_contexts||[]).join(', ')],['License',study.license]].map(([label,value])=><div key={label}><dt>{label}</dt><dd>{value||'Not recorded in this snapshot'}</dd></div>)}</dl>
  <div className="inline-note"><Info size={15}/><p>Intended applications do not change experimental gravity. Shared metadata or matching units do not establish scientific comparability.</p></div>
