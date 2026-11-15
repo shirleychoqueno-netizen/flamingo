@@ -1,5 +1,5 @@
 import React, {useMemo, useState} from 'react';
-import {ArrowUpRight, Info, MousePointerClick, RotateCcw, Sparkles, Layers3, Gauge, FlaskConical, Expand, Tags, Box, Flame, Siren, CircleHelp as HelpCircle} from 'lucide-react';
+import {ArrowUpRight, Info, MousePointerClick, RotateCcw, Sparkles, Layers3, Gauge, FlaskConical, Expand, Tags, Box, Flame, Siren, CircleHelp as HelpCircle, Play, Pause} from 'lucide-react';
 import {learnHabitats, learnDisclaimer} from './learn-habitats';
 import {investigations} from './investigation-catalog';
 import HabitatViewer from './HabitatViewer';
@@ -69,15 +69,53 @@ function HabitatExplorer({onAsk}) {
  </>;
 }
 
+const headings = {
+ habitat: ['01 · HÁBITATS 3D', 'Recorre el espacio', 'pieza por pieza.', 'Gira el modelo, toca un número y descubre de qué está hecha cada parte y qué tiene que ver con el fuego.'],
+ lab: ['02 · LABORATORIO DE LLAMA', 'Cambia la gravedad.', 'Mira cómo cambia la llama.', 'Mueve los controles y compara una vela en la Tierra, en la Luna y en órbita.'],
+ mission: ['03 · MISIÓN', '¡Suena la alarma!', 'Tú decides qué hacer.', 'Seis decisiones, puntos por cada acierto y una explicación en cada paso.'],
+};
+
 export default function LearnHabitat({navigate, onAsk}) {
  const [mode, setMode] = useState('habitat');
- return <main className="utility-page learn-page" lang="es">
-  <div className="page-title"><div><div className="eyebrow">APRENDE EXPLORANDO</div><h1>¿Cómo se comporta el fuego en el espacio?</h1><p>Recorre una nave, una base lunar y un rover pieza por pieza, juega con una llama cambiando la gravedad y pon a prueba lo aprendido en una misión.</p></div><span className="status-pill"><span/>Para escolares · secundaria</span></div>
-  <div className="learn-modes" role="tablist" aria-label="Actividades">
-   {modes.map(([id, Icon, title, sub]) => <button key={id} role="tab" aria-selected={mode === id} className={mode === id ? 'active' : ''} onClick={() => setMode(id)}><Icon size={22}/><span><strong>{title}</strong><small>{sub}</small></span></button>)}
+ const [paused, setPaused] = useState(() => typeof matchMedia !== 'undefined' && matchMedia('(prefers-reduced-motion: reduce)').matches);
+ const choose = id => { setMode(id); requestAnimationFrame(() => document.getElementById('learn-activity')?.scrollIntoView({behavior: 'smooth', block: 'start'})); };
+ const [eyebrow, title, accent, lead] = headings[mode];
+ return <main className="research-home learn-page" lang="es">
+  <section className="discovery-hero learn-hero">
+   <div className="discovery-intro">
+    <div className="home-eyebrow"><span/>APRENDE EXPLORANDO · SECUNDARIA</div>
+    <h1>Fuego en el espacio.<br/><em>Aprende jugando.</em></h1>
+    <p className="discovery-lead">Recorre una nave, una base lunar y un rover pieza por pieza.<br/>Juega con una llama cambiando la gravedad y ponte a prueba en una misión.</p>
+    <div className="learn-hero-actions">{modes.map(([id, Icon, t, sub]) => <button key={id} className={`learn-hero-chip ${mode === id ? 'active' : ''}`} onClick={() => choose(id)}><Icon size={18}/><span><strong>{t}</strong><small>{sub}</small></span><ArrowUpRight size={15}/></button>)}</div>
+   </div>
+   <div className="discovery-visual">
+    {paused ? <img src="/media/droplet-flame.jpg" alt=""/> : <video autoPlay muted loop playsInline preload="metadata" poster="/media/droplet-flame.jpg" onLoadedMetadata={e => { e.currentTarget.currentTime = 28; }} onTimeUpdate={e => { if (e.currentTarget.currentTime > 57) e.currentTarget.currentTime = 28; }} aria-label="Gota de combustible ardiendo en microgravedad, NASA FLEX-2"><source src="/media/flex-2.webm" type="video/webm"/></video>}
+    <div className="discovery-video-caption"><div><strong>Sin “arriba”,<br/>la llama es una esfera.</strong><span>FLEX-2 · gota en órbita</span></div><button className="motion-toggle" onClick={() => setPaused(!paused)} aria-label={paused ? 'Reproducir video' : 'Pausar video'}>{paused ? <Play size={17}/> : <Pause size={17}/>}</button></div>
+   </div>
+  </section>
+
+  <section className="home-proof learn-proof" aria-label="Lo que puedes explorar">
+   <div><strong>3</strong><span>hábitats en 3D</span></div>
+   <div><strong>18</strong><span>partes para descubrir</span></div>
+   <div><strong>6</strong><span>decisiones en la misión</span></div>
+   <div className="home-proof-source"><Info size={22}/><span>Herramienta educativa.<br/><strong>No es una simulación validada.</strong></span></div>
+  </section>
+
+  <nav className="learn-modes" role="tablist" aria-label="Actividades" id="learn-activity">
+   {modes.map(([id, Icon, t, sub], i) => <button key={id} role="tab" aria-selected={mode === id} className={mode === id ? 'active' : ''} onClick={() => setMode(id)}><span className="learn-mode-index">0{i + 1}</span><Icon size={20}/><span><strong>{t}</strong><small>{sub}</small></span></button>)}
+  </nav>
+
+  <div className="home-section-heading learn-section-heading" key={mode}>
+   <div><div className="home-eyebrow"><span/>{eyebrow}</div><h2>{title}<br/><em>{accent}</em></h2></div>
+   <p>{lead}</p>
   </div>
-  <div className="learn-disclaimer" role="note"><Info size={16}/><p>{learnDisclaimer}</p></div>
+
   {mode === 'habitat' ? <HabitatExplorer onAsk={onAsk}/> : mode === 'lab' ? <FlameLab/> : <FireMission/>}
-  <div className="learn-footer-actions"><button className="button primary" onClick={() => navigate('explore')}>Ver todas las investigaciones<ArrowUpRight size={15}/></button><button className="button secondary" onClick={() => navigate('library')}>Ir a la biblioteca</button></div>
+
+  <p className="learn-disclaimer" role="note"><Info size={15}/>{learnDisclaimer}</p>
+  <section className="home-featured learn-next">
+   <div className="home-section-heading"><div><div className="home-eyebrow">¿QUIERES IR MÁS LEJOS?</div><h2>Los experimentos reales<br/>están en la colección.</h2></div><button className="button secondary" onClick={() => navigate('explore')}>Ver todas las investigaciones<ArrowUpRight size={16}/></button></div>
+  </section>
+  <div className="home-independent"><strong>flamingo</strong><span>Aprende · fuego en el espacio para escolares</span><p>Hecho con investigaciones públicas de NASA. Herramienta educativa; no es una certificación de seguridad.</p></div>
  </main>;
 }
