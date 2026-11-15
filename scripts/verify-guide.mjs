@@ -33,7 +33,7 @@ try{
  checks.push('Evidence-backed internal routes only; deduplication, scoped search, source quotes and no forced generation');
  checks.push('Empty/greeting/follow-up questions; bounded input; no-evidence, quota and HTTP errors');
  const home=renderToStaticMarkup(React.createElement(ResearchHome,{navigate:()=>{},onAsk:()=>{}}));
- assert.ok(home.includes('Small flames.'));assert.ok(home.includes('ASK YOUR RESEARCH GUIDE'));assert.ok(home.includes('NASA FLEX-2'));assert.equal((home.match(/class="research-path"/g)||[]).length,3);
+ assert.ok(home.includes('Small flames.'));assert.ok(home.includes('ASK YOUR RESEARCH GUIDE'));assert.ok(home.includes('NASA FLEX-2'));assert.equal((home.match(/class="context-choice"/g)||[]).length,3);assert.ok(!home.includes('GO FROM CURIOUS TO SPECIFIC'));
  assert.ok(!home.includes('Full-text PDFs (2)'));
  const assistant=renderToStaticMarkup(React.createElement(ResearchAssistant,{open:true,onClose:()=>{},seed:{id:0},navigate:()=>{},accession:'PSI-25'}));
  assert.ok(assistant.includes('<dialog'));assert.ok(assistant.includes('Search within PSI-25'));assert.ok(assistant.includes('NASA evidence'));assert.ok(assistant.includes('does not establish')||assistant.includes('do not establish'));

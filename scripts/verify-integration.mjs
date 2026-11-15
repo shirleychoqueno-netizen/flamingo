@@ -26,7 +26,7 @@ try{
   assert.deepEqual(leftovers,[],route+': untranslated interface copy');
   if(route==='#nasa')assert.equal((html.match(/class="nasa-catalog-row"/g)||[]).length,25);
   if(route===''){assert.ok(html.includes('Small flames.'));assert.ok(html.includes('ASK YOUR RESEARCH GUIDE'));assert.ok(!html.includes('Full-text PDFs (2)'));}
-  if(route==='#explore'){assert.equal((html.match(/class="investigation-card"/g)||[]).length,25);assert.ok(html.includes('Source rows available'));assert.ok(html.includes('Reading room'));}
+  if(route==='#explore'){assert.equal((html.match(/class="investigation-card"/g)||[]).length,25);assert.ok(html.includes('Source rows available'));assert.ok(!html.includes('Reading room'),'#explore: reading-room shortcut removed');assert.ok(html.includes('Find an investigation by title, topic or accession'),'#explore: search keeps an accessible label');}
   if(route==='#library'){assert.equal((html.match(/class="library-study-code"/g)||[]).length,25);assert.ok(html.includes('Curated reading room'));assert.ok(!html.includes('2 incorporated PDFs'));}
   if(route==='#investigation/PSI-68')assert.ok(html.includes('Inventory gap:'));
   if(route==='#investigation/PSI-60')assert.ok(html.includes('No local source table rows'));
