@@ -1,22 +1,56 @@
-import React,{useEffect,useRef,useState} from 'react';
-import {ArrowRight,ArrowUpRight,Sparkles,Pause,Play,ScanLine} from 'lucide-react';
+import React,{useCallback,useEffect,useRef,useState} from 'react';
+import {ArrowRight,ArrowUpRight,Sparkles,Pause,Play,ScanLine,X} from 'lucide-react';
 import {investigations} from './investigation-catalog';
 
 const paths=[
- {id:'droplets',label:'Droplets in microgravity',detail:'FLEX-2 · liquid fuel',question:'Which investigations study liquid droplet flame extinction?',image:'/media/droplet-flame.jpg',video:'/media/flex-2.webm'},
- {id:'spread',label:'Solid flame spread',detail:'BASS · acrylic sphere',question:'Which investigations measure flame spread over solid materials?',image:'/media/solid-poster.jpg',animation:'/media/solid-sequence.gif'},
- {id:'flow',label:'Variable ventilation',detail:'BASS · opposed flow',question:'How does ventilation affect flame spread in BASS and Saffire?',image:'/media/ventilation-poster.jpg',animation:'/media/ventilation.gif'},
+ {id:'droplets',label:'Droplets in microgravity',detail:'FLEX-2 · liquid fuel',question:'Which investigations study liquid droplet flame extinction?',image:'/media/droplet-flame.jpg',video:'/media/flex-2.webm',
+  context:'3 mm droplet · 21 % O₂ · 1 atm',source:'NASA Johnson footage',sourceUrl:'https://commons.wikimedia.org/wiki/File:Amazing_Flame_Comes_to_Life_in_Space_Station_Microgravity_Combustion_Science.webm',
+  points:['A tiny droplet of liquid fuel is ignited aboard the International Space Station.','On Earth, hot gas rises and stretches a flame into a teardrop. In microgravity nothing pulls it upward, so the flame becomes a sphere around the droplet.','FLEX and FLEX-2 measured how fast droplets burn, when they go out, and found “cool flames” that keep reacting after the visible flame disappears.'],
+  why:'Liquid fuels and solvents travel on every mission. Knowing when their flames die helps choose fire suppressants and safe cabin atmospheres.',related:['PSI-68','PSI-69']},
+ {id:'spread',label:'Solid flame spread',detail:'BASS · acrylic sphere',question:'Which investigations measure flame spread over solid materials?',image:'/media/solid-poster.jpg',animation:'/media/solid-sequence.gif',
+  context:'2 cm acrylic sphere · 17 % O₂ · 12 cm/s airflow',source:'NASA guide p. 20, figure 11 · photos about 1.5 s apart',sourceUrl:'/documents/combustion-science-guide.pdf#page=20',
+  points:['A 2 cm sphere of acrylic (PMMA) burns inside a chamber on the space station, with a gentle airflow.','The flame is small, dim and blue, very different from a yellow candle flame on Earth.','BASS compared how solid materials burn in orbit with the standard flammability test used on the ground.'],
+  why:'Spacecraft are full of solid materials. If ground tests do not predict how they burn in orbit, safety rules have to account for it.',related:['PSI-26','PSI-25']},
+ {id:'flow',label:'Variable ventilation',detail:'BASS · opposed flow',question:'How does ventilation affect flame spread in BASS and Saffire?',image:'/media/ventilation-poster.jpg',animation:'/media/ventilation.gif',
+  context:'2 cm fabric · airflow from 10 to under 1 cm/s',source:'NASA guide p. 20, figure 12 · photos every 1.25 s',sourceUrl:'/documents/combustion-science-guide.pdf#page=20',
+  points:['A flame burns on a strip of fabric while the airflow against it is slowly reduced.','As the air slows down, the flame gets smaller and weaker until it goes out.','In microgravity the fans are the only thing bringing fresh oxygen to a flame.'],
+  why:'That is why turning off the ventilation is one of the first steps when a fire is detected on a spacecraft.',related:['PSI-25','PSI-100']},
 ];
+
+function FlameSpotlight({path,paused,onClose,onAsk}){
+ useEffect(()=>{const key=e=>{if(e.key==='Escape')onClose();};window.addEventListener('keydown',key);return()=>window.removeEventListener('keydown',key);},[onClose]);
+ return <div className="flame-spotlight" role="dialog" aria-modal="true" aria-labelledby="flame-spotlight-title" onClick={onClose}>
+  <div className="flame-spotlight-card" onClick={e=>e.stopPropagation()}>
+   <div className="flame-spotlight-media">{path.video&&!paused?<video autoPlay muted loop playsInline poster={path.image} onLoadedMetadata={e=>{e.currentTarget.currentTime=28;}} onTimeUpdate={e=>{if(e.currentTarget.currentTime>57)e.currentTarget.currentTime=28;}}><source src={path.video} type="video/webm"/></video>:<img src={paused?path.image:path.animation||path.image} alt={`${path.label}: ${path.context}`}/>}<span className="flame-spotlight-context">{path.context}</span></div>
+   <div className="flame-spotlight-copy">
+    <button className="flame-spotlight-close icon-button" onClick={onClose} aria-label="Close"><X size={18}/></button>
+    <span className="home-eyebrow">{path.detail.toUpperCase()}</span>
+    <h2 id="flame-spotlight-title">{path.label}</h2>
+    <ol>{path.points.map(t=><li key={t}>{t}</li>)}</ol>
+    <p className="flame-spotlight-why"><strong>Why it matters</strong>{path.why}</p>
+    <div className="flame-spotlight-links">{path.related.map(id=>{const s=investigations.find(s=>s.accession===id);return s&&<a key={id} href={`#investigation/${id}`} onClick={onClose}><span>{id} / {s.acronym}</span>{s.title}<ArrowUpRight size={14}/></a>;})}</div>
+    <div className="flame-spotlight-actions"><button className="button primary" onClick={()=>{onClose();onAsk(path.question);}}><Sparkles size={15}/>Ask the research guide</button><a className="text-button" href={path.sourceUrl} target="_blank" rel="noreferrer">{path.source}<ArrowUpRight size={13}/></a></div>
+   </div>
+  </div>
+ </div>;
+}
 export default function ResearchHome({navigate,onAsk}) {
  const [question,setQuestion]=useState(''),[paused,setPaused]=useState(()=>typeof matchMedia!=='undefined'&&matchMedia('(prefers-reduced-motion: reduce)').matches);
  const video=useRef(null);
+ const [spotlight,setSpotlight]=useState(null);
+ const hoverTimer=useRef(0);
+ const openSoon=id=>{clearTimeout(hoverTimer.current);hoverTimer.current=setTimeout(()=>setSpotlight(id),450);};
+ const cancelOpen=()=>clearTimeout(hoverTimer.current);
+ const closeSpotlight=useCallback(()=>{clearTimeout(hoverTimer.current);setSpotlight(null);},[]);
+ useEffect(()=>()=>clearTimeout(hoverTimer.current),[]);
  useEffect(()=>{if(!video.current)return;if(paused)video.current.pause();else video.current.play().catch(()=>setPaused(true));},[paused]);
  return <main className="research-home"><section className="discovery-hero"><div className="discovery-intro"><div className="home-eyebrow"><span/>NASA DATA. HUMAN CURIOSITY.</div><h1>Small flames.<br/><em>Big questions.</em></h1><p className="discovery-lead">Discover how fire behaves in space.<br/>Find the research that moves your question forward.</p>
  <form className="home-guide-input" onSubmit={e=>{e.preventDefault();onAsk(question);}}><label htmlFor="home-research-question"><Sparkles size={17}/>ASK YOUR RESEARCH GUIDE</label><div><input id="home-research-question" value={question} onChange={e=>setQuestion(e.target.value)} maxLength={400} placeholder="How does fire spread in microgravity?"/><button type="submit" aria-label="Ask the research guide"><ArrowRight size={22}/></button></div><p>Find relevant investigations, source tables and evidence.</p></form>
  <button className="home-browse-link" onClick={()=>navigate('explore')}>Or explore all 25 investigations<ArrowUpRight size={16}/></button></div>
  <div className="discovery-visual"><div className="discovery-visual-top"><span>OBSERVATION / 01</span><span className="home-live-dot">MICROGRAVITY</span></div><video ref={video} autoPlay={!paused} muted loop playsInline preload="metadata" poster="/media/droplet-flame.jpg" onLoadedMetadata={e=>{e.currentTarget.currentTime=28;}} onTimeUpdate={e=>{if(e.currentTarget.currentTime>57)e.currentTarget.currentTime=28;}} aria-label="NASA FLEX-2 burning droplet in microgravity"><source src="/media/flex-2.webm" type="video/webm"/></video><div className="discovery-video-caption"><div><strong>A different gravity.<br/>A different flame.</strong><span>FLEX-2 · liquid-fuel combustion</span></div><button className="motion-toggle" onClick={()=>setPaused(!paused)} aria-label={paused?'Play NASA footage':'Pause NASA footage'}>{paused?<Play size={17}/>:<Pause size={17}/>}</button></div><a className="discovery-credit" href="https://commons.wikimedia.org/wiki/File:Amazing_Flame_Comes_to_Life_in_Space_Station_Microgravity_Combustion_Science.webm" target="_blank" rel="noreferrer">Footage: NASA Johnson<ArrowUpRight size={12}/></a></div></section>
  <section className="home-proof" aria-label="Research available"><div><strong>25</strong><span>NASA investigations</span></div><div><strong>2,009</strong><span>available source rows</span></div><div className="home-proof-source"><ScanLine size={22}/><span>Follow every finding<br/><strong>back to its source.</strong></span></div></section>
- <section className="context-explorer home-context-explorer" aria-label="Explore how flames change"><div className="eyebrow">EXPLORE HOW FLAMES CHANGE</div><div className="context-options">{paths.map(p=><button className="context-choice" key={p.id} onClick={()=>onAsk(p.question)}><span className="context-orb">{paused?<img src={p.image} alt="" loading="lazy"/>:p.video?<video autoPlay muted loop playsInline preload="metadata" poster={p.image} onLoadedMetadata={e=>{e.currentTarget.currentTime=28;}} onTimeUpdate={e=>{if(e.currentTarget.currentTime>57)e.currentTarget.currentTime=28;}} aria-hidden="true"><source src={p.video} type="video/webm"/></video>:<img src={p.animation} alt="" loading="lazy"/>}<span/></span><span><strong>{p.label}</strong><small>{p.detail}</small></span><ArrowRight size={15}/></button>)}</div><p className="media-scope-note">Each scene retains its experimental context. Selecting an application habitat does not turn these images into lunar or Martian data.</p></section>
+ <section className="context-explorer home-context-explorer" aria-label="Explore how flames change"><div className="eyebrow">EXPLORE HOW FLAMES CHANGE</div><div className="context-options">{paths.map(p=><button className="context-choice" key={p.id} onMouseEnter={()=>openSoon(p.id)} onMouseLeave={cancelOpen} onClick={()=>{cancelOpen();setSpotlight(p.id);}} aria-haspopup="dialog"><span className="context-orb">{paused?<img src={p.image} alt="" loading="lazy"/>:p.video?<video autoPlay muted loop playsInline preload="metadata" poster={p.image} onLoadedMetadata={e=>{e.currentTarget.currentTime=28;}} onTimeUpdate={e=>{if(e.currentTarget.currentTime>57)e.currentTarget.currentTime=28;}} aria-hidden="true"><source src={p.video} type="video/webm"/></video>:<img src={p.animation} alt="" loading="lazy"/>}<span/></span><span><strong>{p.label}</strong><small>{p.detail}</small></span><ArrowRight size={15}/></button>)}</div><p className="media-scope-note">Each scene retains its experimental context. Selecting an application habitat does not turn these images into lunar or Martian data.</p></section>
+ {spotlight&&<FlameSpotlight path={paths.find(p=>p.id===spotlight)} paused={paused} onClose={closeSpotlight} onAsk={onAsk}/>}
  <section className="home-featured"><div className="home-section-heading"><div><div className="home-eyebrow">FROM THE RESEARCH COLLECTION</div><h2>Real experiments.<br/>Questions worth exploring.</h2></div><button className="button secondary" onClick={()=>navigate('explore')}>View all investigations<ArrowRight size={16}/></button></div><div className="featured-study-list">{['PSI-98','PSI-25','PSI-68'].map((id,i)=>{const s=investigations.find(s=>s.accession===id);return <a href={`#investigation/${id}`} key={id}><span className="featured-index">0{i+1}</span><div><span className="featured-kicker">{id} / {s.acronym}</span><h3>{s.title}</h3><p>{s.platform} · {s.available_rows} source rows</p></div><ArrowUpRight size={24}/></a>;})}</div></section>
  <div className="home-independent"><strong>flamingo</strong><span>Flame Learning &amp; Analysis in Microgravity: INsights for Gravity-Off missions</span><p>Built with public NASA research. An independent exploration tool; not a safety certification.</p></div></main>;
 }

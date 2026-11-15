@@ -1,5 +1,26 @@
 /* flamingo refinement: open, blended media and a collection-wide library. */
 .research-home .home-context-explorer{margin:56px 0 0;border:0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}.home-context-explorer .context-choice{cursor:pointer;color:inherit;background:none;border:0}.home-context-explorer .context-choice small{color:#a8b6c6}.research-home .home-context-explorer{padding:34px 30px 22px}.home-context-explorer .context-options{gap:34px}.home-context-explorer .context-choice{gap:22px}.home-context-explorer .context-orb{width:150px;height:150px;outline-color:#a6b7ce55;box-shadow:0 0 42px #5b8fd626}.home-context-explorer .context-orb video{width:100%;height:100%;object-fit:cover;border-radius:50%;filter:saturate(1.05)}.home-context-explorer .context-orb img{filter:saturate(1.05)}.home-context-explorer .context-orb>span{inset:-9px}.home-context-explorer .context-choice strong{font-size:19px}.home-context-explorer .context-choice small{font-size:14px}
+.flame-spotlight{position:fixed;inset:0;z-index:80;display:grid;place-items:center;padding:clamp(12px,3vw,40px);background:#04060acc;backdrop-filter:blur(10px);animation:spot-fade .25s ease}
+.flame-spotlight-card{width:min(1280px,100%);max-height:calc(100vh - 40px);display:grid;grid-template-columns:minmax(0,1.6fr) minmax(320px,1fr);background:#0d131b;border:1px solid #2d3846;border-radius:16px;overflow:hidden;box-shadow:0 30px 120px #000c;animation:spot-grow .35s cubic-bezier(.2,.8,.2,1)}
+.flame-spotlight-media{position:relative;background:#000;min-height:min(72vh,680px)}
+.flame-spotlight-media video,.flame-spotlight-media img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}
+.flame-spotlight-context{position:absolute;left:16px;bottom:16px;padding:7px 12px;border-radius:999px;background:#000b;border:1px solid #ffffff22;font:11px/1.4 var(--mono);color:#dfe8f2;letter-spacing:.4px}
+.flame-spotlight-copy{position:relative;padding:34px 30px 28px;overflow:auto;display:flex;flex-direction:column;gap:16px}
+.flame-spotlight-close{position:absolute;top:14px;right:14px}
+.app-shell .flame-spotlight-copy h2{font-size:clamp(26px,2.6vw,36px);font-weight:650;letter-spacing:-1px;line-height:1.15;margin:0}
+.flame-spotlight-copy ol{margin:0;padding-left:20px;display:grid;gap:10px;font-size:15px;line-height:1.7;color:#c6d3e0}
+.flame-spotlight-copy ol li::marker{color:var(--warm);font-weight:700}
+.flame-spotlight-why{border-left:2px solid var(--warm);padding:4px 0 4px 14px;font-size:14px;line-height:1.7;color:#d6c3b2;margin:0}
+.flame-spotlight-why strong{display:block;color:#fff;font-size:13px;margin-bottom:4px}
+.flame-spotlight-links{display:grid;gap:8px}
+.flame-spotlight-links a{display:grid;grid-template-columns:1fr auto;gap:2px 10px;align-items:center;border:1px solid #2a3644;border-radius:8px;padding:9px 12px;font-size:13px;color:#dbe5ef}
+.flame-spotlight-links a:hover{border-color:var(--warm)}
+.flame-spotlight-links span{font:10px/1.6 var(--mono);color:var(--warm)}
+.flame-spotlight-links svg{grid-row:1/3;grid-column:2}
+.flame-spotlight-actions{display:flex;flex-wrap:wrap;align-items:center;gap:14px;margin-top:auto;padding-top:6px}
+@keyframes spot-fade{from{opacity:0}}@keyframes spot-grow{from{opacity:0;transform:scale(.92)}}
+@media(prefers-reduced-motion:reduce){.flame-spotlight,.flame-spotlight-card{animation:none}}
+@media(max-width:900px){.flame-spotlight-card{grid-template-columns:1fr;overflow:auto}.flame-spotlight-media{min-height:46vh}.flame-spotlight-copy{overflow:visible;padding:24px 20px}}
 @media(max-width:1100px){.home-context-explorer .context-orb{width:116px;height:116px}.home-context-explorer .context-choice{flex-direction:column;align-items:flex-start;gap:16px}}
 @media(max-width:600px){.research-home .home-context-explorer{padding:24px 14px 16px}.home-context-explorer .context-options{grid-template-columns:1fr;gap:18px}.home-context-explorer .context-choice{flex-direction:row;align-items:center}.home-context-explorer .context-orb{width:96px;height:96px}.home-context-explorer .context-choice strong{font-size:16px}.home-context-explorer .context-choice small{font-size:12px}}
 .app-shell .rail-logo{background:#21191c;border-color:#60434b}.app-shell .rail-logo img{display:block;flex-shrink:0}
