@@ -1,5 +1,5 @@
 import React, {useMemo, useState} from 'react';
-import {ArrowUpRight, Info, MousePointerClick, RotateCcw, Sparkles, Layers3, Gauge, FlaskConical, Expand, Tags, Box, Flame, Siren, CircleHelp as HelpCircle, Play, Pause, X, ArrowDown} from 'lucide-react';
+import {ArrowUpRight, Info, MousePointerClick, RotateCcw, Sparkles, Layers3, Gauge, FlaskConical, Expand, Tags, Box, Flame, Siren, CircleHelp as HelpCircle, Play, Pause, X, ArrowDown, ArrowUp} from 'lucide-react';
 import {learnHabitats, learnDisclaimer} from './learn-habitats';
 import {investigations} from './investigation-catalog';
 import HabitatViewer from './HabitatViewer';
@@ -108,7 +108,7 @@ export default function LearnHabitat({navigate, onAsk}) {
   </section>
 
   <nav className="learn-games" role="tablist" aria-label="Elige un juego" id="learn-activity">
-   {modes.map(([id, Icon, t, sub, color, blurb], i) => <button key={id} role="tab" aria-selected={mode === id} className={`learn-game ${mode === id ? 'active' : ''}`} style={{'--game': color}} onClick={() => setMode(id)}>
+   {modes.map(([id, Icon, t, sub, color, blurb], i) => <button key={id} role="tab" aria-selected={mode === id} className={`learn-game ${mode === id ? 'active' : ''}`} style={{'--game': color}} onClick={() => { setMode(id); setTimeout(() => document.getElementById('learn-stage')?.scrollIntoView({behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth', block: 'start'}), 60); }}>
     <span className="learn-game-tag">JUEGO {i + 1}</span>
     <span className="learn-game-icon"><Icon size={38} strokeWidth={1.7}/></span>
     <strong>{t}</strong>
@@ -117,9 +117,17 @@ export default function LearnHabitat({navigate, onAsk}) {
    </button>)}
   </nav>
 
-  <div className="learn-activity" key={mode}>
-   {mode === 'habitat' ? <HabitatExplorer onAsk={onAsk}/> : mode === 'lab' ? <FlameLab/> : <FireMission/>}
-  </div>
+  {(() => { const i = modes.findIndex(m => m[0] === mode); const [, Icon, t, , color] = modes[i]; return <section className="learn-stage-frame" key={mode} style={{'--game': color, '--at': `${((i * 2 + 1) / 6) * 100}%`}} id="learn-stage" aria-label={`Juego ${i + 1}: ${t}`}>
+   <header className="learn-stage-bar">
+    <span className="learn-stage-badge"><Icon size={18}/></span>
+    <span className="learn-stage-name"><small>JUEGO {i + 1}</small>{t}</span>
+    <span className="learn-stage-live"><i/>EN JUEGO</span>
+    <button className="learn-stage-switch" onClick={() => document.getElementById('learn-activity')?.scrollIntoView({behavior: 'smooth', block: 'start'})}>Cambiar juego<ArrowUp size={14}/></button>
+   </header>
+   <div className="learn-activity">
+    {mode === 'habitat' ? <HabitatExplorer onAsk={onAsk}/> : mode === 'lab' ? <FlameLab/> : <FireMission/>}
+   </div>
+  </section>; })()}
 
   <p className="learn-disclaimer" role="note"><Info size={15}/>{learnDisclaimer}</p>
   <section className="home-featured learn-next">
