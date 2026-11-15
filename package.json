@@ -22,9 +22,10 @@
     "test:local-proxy": "node scripts/verify-local-proxy.mjs"
   },
   "dependencies": {
+    "lucide-react": "^0.468.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
-    "lucide-react": "^0.468.0"
+    "three": "0.169.0"
   },
   "devDependencies": {
     "vite": "^7.2.0"

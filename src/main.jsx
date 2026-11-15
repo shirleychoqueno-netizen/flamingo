@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState, lazy, Suspense } from 'react';
 import { createRoot } from 'react-dom/client';
-import { Home, ArrowUpRight, ArrowRight, ArrowLeft, Search, SlidersHorizontal, X, Plus, Check, ChevronDown, ChevronRight, BookOpen, Bookmark, Columns2, Layers3, Orbit, Flame, ShieldCheck, FileText, Download, MessageSquare, Send, Sparkles, Database, ExternalLink, Info, PanelLeftClose, Menu, Microscope, CircleHelp, RotateCcw, CheckCheck, ListFilter, Sun } from 'lucide-react';
+import { Home, ArrowUpRight, ArrowRight, ArrowLeft, Search, SlidersHorizontal, X, Plus, Check, ChevronDown, ChevronRight, BookOpen, Bookmark, Columns2, Layers3, Orbit, Flame, ShieldCheck, FileText, Download, MessageSquare, Send, Sparkles, Database, ExternalLink, Info, PanelLeftClose, Menu, Microscope, CircleHelp, RotateCcw, CheckCheck, ListFilter, Sun, GraduationCap } from 'lucide-react';
 import { habitats, taxonomy, studies, normalize, searchStudy, queryTokens, csvText, evidenceRows, configurationRows, searchPages } from './data';
 import StudyDashboard from './StudyView';
 import NasaWorkbench from './NasaWorkbench';
@@ -11,6 +11,7 @@ import {investigations,rowSelection} from './investigation-catalog';
 import ResearchHome from './ResearchHome';
 import ResearchLibrary from './ResearchLibrary';
 const ResearchAssistant=lazy(()=>import('./ResearchAssistant'));
+const LearnHabitat=lazy(()=>import('./LearnHabitat'));
 import DocumentReader from './DocumentReader';
 import DocumentMetadata from './DocumentMetadata';
 import {documentTypes,matchesDocumentFilters} from './catalogue-filters';
@@ -29,7 +30,7 @@ const parseRoute = () => {
   const route = window.location.hash.slice(1).split('/');
   let id=route[1];
   try { id=decodeURIComponent(id||''); } catch { id=''; }
-  return { accession:route[2]||'', view: ['home', 'explore', 'study', 'compare', 'saved', 'library', 'type', 'nasa', 'investigation', 'pdfs', 'document-saved', 'rows'].includes(route[0]) ? route[0] : 'home', id };
+  return { accession:route[2]||'', view: ['home', 'explore', 'study', 'compare', 'saved', 'library', 'type', 'nasa', 'investigation', 'pdfs', 'document-saved', 'rows', 'learn'].includes(route[0]) ? route[0] : 'home', id };
 };
 const save = (key, value) => { try { localStorage.setItem(key, JSON.stringify(value)); } catch {} };
 
@@ -85,7 +86,7 @@ export function App() {
   useEffect(()=>{save('ignis.rows.selected',selectedRows);},[selectedRows]);
   useEffect(() => { save('ignis.selected', selected); }, [selected]);
   useEffect(() => { if (!notice) return; const timer = setTimeout(() => setNotice(''), 4000); return () => clearTimeout(timer); }, [notice]);
-  useEffect(() => { document.title = route.view === 'study' ? `${studies.find(s => s.id === route.id)?.acronym || 'Study'} — flamingo` : route.view === 'type' ? `${route.id} — flamingo` : 'flamingo — Combustion Research'; window.scrollTo(0, 0); }, [route]);
+  useEffect(() => { document.title = route.view === 'study' ? `${studies.find(s => s.id === route.id)?.acronym || 'Study'} — flamingo` : route.view === 'type' ? `${route.id} — flamingo` : route.view === 'learn' ? 'Learn: space habitat — flamingo' : 'flamingo — Combustion Research'; window.scrollTo(0, 0); }, [route]);
   useEffect(() => {
     if(route.view !== 'type')return;
     setQuery('');setActiveQuery('');setDocumentType(route.id);setPublication(null);setResource('all');setFilterOpen(false);
@@ -119,7 +120,7 @@ export function App() {
     <aside className="rail" aria-label="Main navigation">
       <a className="rail-logo" href="#" aria-label="flamingo home"><Flame size={25} strokeWidth={1.6} /></a>
       <div className="rail-group">
-        {[['home', Home, 'Home'], ['explore', Search, 'Explore'], ['rows', Columns2, 'Compare rows'], ['saved', Bookmark, 'Saved'], ['library', Database, 'Library']].map(([view, Icon, label]) => <button key={view} className={`rail-link ${route.view === view || view === 'explore' && ['study','type','pdfs','investigation','document-saved'].includes(route.view) ? 'active' : ''}`} onClick={() => navigate(view)} aria-label={label} title={label} aria-current={route.view === view ? 'page' : undefined}><Icon size={20} strokeWidth={1.6} /><span>{label}</span>{view === 'rows' && selectedRows.length > 0 && <b className="rail-count">{selectedRows.length}</b>}</button>)}
+        {[['home', Home, 'Home'], ['explore', Search, 'Explore'], ['rows', Columns2, 'Compare rows'], ['saved', Bookmark, 'Saved'], ['library', Database, 'Library'], ['learn', GraduationCap, 'Aprende']].map(([view, Icon, label]) => <button key={view} className={`rail-link ${route.view === view || view === 'explore' && ['study','type','pdfs','investigation','document-saved'].includes(route.view) ? 'active' : ''}`} onClick={() => navigate(view)} aria-label={label} title={label} aria-current={route.view === view ? 'page' : undefined}><Icon size={20} strokeWidth={1.6} /><span>{label}</span>{view === 'rows' && selectedRows.length > 0 && <b className="rail-count">{selectedRows.length}</b>}</button>)}
       </div>
       <a className="rail-help" href="https://www.spaceappschallenge.org/2026/challenges/flame-in-freefall/" target="_blank" rel="noreferrer" aria-label="Open the Flame in Freefall challenge" title="About the challenge"><CircleHelp size={20} /></a>
       <div className="rail-avatar" title="Local workspace">FL</div>
@@ -134,6 +135,7 @@ export function App() {
       {route.view==='home'?<ResearchHome navigate={navigate} onAsk={openGuide}/> : ['explore','saved'].includes(route.view)?<InvestigationExplorer navigate={navigate} saved={savedInvestigations} onSave={toggleSavedInvestigation} onAsk={openGuide} savedOnly={route.view==='saved'}/> : route.view==='investigation'?<InvestigationDetail key={route.id} accession={route.id} navigate={navigate} saved={savedInvestigations.includes(route.id)} onSave={toggleSavedInvestigation} selected={selectedRows} onToggle={toggleRow} onAsk={openGuide}/> : route.view==='rows'?<RowComparison selected={selectedRows} onRemove={toggleRow} navigate={navigate}/> : route.view === 'nasa' ? <NasaWorkbench key={route.id+'|'+route.accession} initialQuery={route.id} initialAccession={route.accession} selectedRows={selectedRows} onSelectedRowsChange={setSelectedRows}/> : route.view === 'study' && current ? <StudyDashboard key={current.id} study={current} habitat={habitat} saved={saved.includes(current.id)} onSave={() => toggleSaved(current.id)} onBack={() => navigate('pdfs')} onExport={() => exportStudies([current])} selected={selected.includes(current.id)} onCompare={() => toggleSelected(current.id)} />
         : route.view === 'compare' ? <Compare selected={selected} onToggle={toggleSelected} onAdd={() => navigate('pdfs')} onExport={() => exportStudies(studies.filter(s => selected.includes(s.id)))} onOpen={id => navigate(`study/${id}`)} />
         : route.view === 'library' ? <ResearchLibrary onOpen={id=>navigate(`study/${id}`)} navigate={navigate}/>
+        : route.view === 'learn' ? <Suspense fallback={<main className="utility-page"><p className="nasa-caption" role="status">Loading the 3D habitat…</p></main>}><LearnHabitat navigate={navigate} onAsk={openGuide}/></Suspense>
         : <main className={route.view === 'type'?'document-type-page':undefined}>
           {route.view === 'type'?<div className="breadcrumb type-breadcrumb"><button onClick={()=>navigate('explore')}><ArrowLeft size={14}/>Explore documents</button><span>/</span><span>{route.id}</span></div>:<div className="workspace"><div className="page-title"><div><div className="eyebrow">CURATED READING ROOM</div><h1>Read the source documents.</h1><p>Read full-text documents and page-cited evidence from our curated collection. All 25 NASA investigations remain available in the research catalog.</p></div><button className="button secondary" onClick={()=>navigate('explore')}>All investigations (25)<ArrowRight size={15}/></button></div><div className="investigation-actions"><button className="text-button" onClick={()=>navigate('compare')}>Compare PDF evidence<Columns2 size={14}/></button><button className="text-button" onClick={()=>navigate('document-saved')}>Saved PDFs<Bookmark size={14}/></button></div></div>}
 
