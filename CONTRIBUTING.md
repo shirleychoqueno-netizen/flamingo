@@ -2,7 +2,7 @@
 
 All product copy, code comments and new project documentation are English. Preserve original NASA source text and evidence values.
 
-Each person clones the private GitHub repository into their own local folder. Keep active Git clones outside shared Drive/OneDrive synchronization where possible; use Drive for handoffs, not concurrent edits to the same .git directory.
+Each person clones the GitHub repository into their own local folder. Keep active Git clones outside shared Drive/OneDrive synchronization where possible; use Drive for handoffs, not concurrent edits to the same .git directory.
 
 ## Two-person workflow
 
