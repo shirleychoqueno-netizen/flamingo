@@ -100,15 +100,13 @@ const headings = {
 export default function LearnHabitat({navigate, onAsk}) {
  const [mode, setMode] = useState('habitat');
  const [paused, setPaused] = useState(() => typeof matchMedia !== 'undefined' && matchMedia('(prefers-reduced-motion: reduce)').matches);
- const choose = id => { setMode(id); requestAnimationFrame(() => document.getElementById('learn-activity')?.scrollIntoView({behavior: 'smooth', block: 'start'})); };
  const [eyebrow, title, accent, lead] = headings[mode];
  return <main className="research-home learn-page" lang="es">
   <section className="discovery-hero learn-hero">
    <div className="discovery-intro">
     <div className="home-eyebrow"><span/>APRENDE EXPLORANDO · SECUNDARIA</div>
     <h1>Fuego en el espacio.<br/><em>Aprende jugando.</em></h1>
-    <p className="discovery-lead">Recorre una nave, una base lunar y un rover pieza por pieza.<br/>Juega con una llama cambiando la gravedad y ponte a prueba en una misión.</p>
-    <div className="learn-hero-actions">{modes.map(([id, Icon, t, sub, color]) => <button key={id} className={`learn-hero-chip ${mode === id ? 'active' : ''}`} style={{'--game': color}} onClick={() => choose(id)}><Icon size={18}/><span><strong>{t}</strong><small>{sub}</small></span><ArrowUpRight size={15}/></button>)}</div>
+    <p className="discovery-lead">Recorre una nave, una base lunar y un rover pieza por pieza. <br/>Juega con una llama cambiando la gravedad y ponte a prueba en una misión.</p>
    </div>
    <div className="discovery-visual">
     {paused ? <img src="/media/droplet-flame.jpg" alt=""/> : <video autoPlay muted loop playsInline preload="metadata" poster="/media/droplet-flame.jpg" onLoadedMetadata={e => { e.currentTarget.currentTime = 28; }} onTimeUpdate={e => { if (e.currentTarget.currentTime > 57) e.currentTarget.currentTime = 28; }} aria-label="Gota de combustible ardiendo en microgravedad, NASA FLEX-2"><source src="/media/flex-2.webm" type="video/webm"/></video>}
