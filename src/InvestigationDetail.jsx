@@ -34,13 +34,6 @@ function DetailDashboard({study,saved,onSave,comparing,onCompare,navigate}){
     </div>
    </div>
   </section>
-  <section className="detail-kpis">
-   <Kpi Icon={Database} value={study.available_rows||0} label="Source rows" hint={`${study.source_tables||0} source tables`}/>
-   <Kpi Icon={Layers} value={study.indexed_fragments||0} label="Indexed fragments" hint="Searchable text and cells"/>
-   <Kpi Icon={Files} value={study.n_assets||0} label="Remote NASA files" hint="Hosted by NASA"/>
-   <Kpi Icon={HardDrive} value={(study.remote_bytes||0)/1e9} decimals={1} suffix=" GB" label="Remote data" hint="Declared size, not downloaded"/>
-   <Kpi Icon={BookOpen} value={study.n_publications||0} label="Publications" hint="Bibliographic references"/>
-  </section>
  </>;
 }
 export default function InvestigationDetail({accession,navigate,saved,onSave,selected,onToggle,onAsk,comparing=[],onCompare}){
