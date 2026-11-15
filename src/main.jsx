@@ -24,6 +24,7 @@ import './styles.css';
 import './refresh.css';
 import './experience.css';
 import './flamingo.css';
+import './typography.css';
 
 const icons = { environment: Orbit, fuel: Layers3, fire: Flame, safety: ShieldCheck, evidence: FileText };
 const presets = ['Oxygen and flame spread', 'Soot formation', 'Ventilation and solid materials'];

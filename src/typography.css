@@ -1,0 +1,58 @@
+/*
+ * flamingo typography.
+ * Apple's system face (SF Pro) on Apple devices, Geist elsewhere,
+ * Instrument Serif italic for the accent line of headlines, Geist Mono for data.
+ * Loaded last so it refines the existing styles without editing them.
+ */
+:root,.app-shell{
+ --sans:-apple-system,BlinkMacSystemFont,"SF Pro Text","Geist",system-ui,"Segoe UI",sans-serif;
+ --display:-apple-system,BlinkMacSystemFont,"SF Pro Display","Geist",system-ui,"Segoe UI",sans-serif;
+ --serif:"Instrument Serif","Iowan Old Style","Times New Roman",Georgia,serif;
+ --mono:"Geist Mono","SF Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+html,body,.app-shell,.app-shell button,.app-shell input,.app-shell select,.app-shell textarea{font-family:var(--sans);-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-rendering:optimizeLegibility;font-feature-settings:"ss01","cv11"}
+.app-shell{font-size:15px;letter-spacing:-.006em}
+
+/* Headlines: display face, tight tracking, confident weight. */
+.app-shell h1,.app-shell h2,.app-shell h3,.app-shell .wordmark{font-family:var(--display)}
+.app-shell h1{font-weight:600;letter-spacing:-.035em}
+.app-shell h2{font-weight:600;letter-spacing:-.025em}
+.app-shell h3{font-weight:600;letter-spacing:-.012em}
+.discovery-intro h1,.learn-hero .discovery-intro h1{font-weight:650;letter-spacing:-.045em;line-height:1}
+.app-shell .detail-hero h1,.app-shell .compare-empty h1{letter-spacing:-.04em}
+
+/* The accent line: an elegant serif italic, like a keynote title card. */
+.app-shell .discovery-intro h1 em,
+.app-shell .home-section-heading h2 em,
+.app-shell .learn-section-heading h2 em,
+.app-shell .compare-heading h2 em,
+.app-shell .compare-empty h1 em{font-family:var(--serif);font-style:italic;font-weight:400;letter-spacing:-.02em;line-height:1}
+.app-shell .discovery-intro h1 em{font-size:1.08em}
+
+/* Wordmark */
+.app-shell .wordmark{font-weight:650;letter-spacing:-.045em}
+.app-shell .wordmark-description{font-family:var(--sans);font-size:11px;font-weight:500;letter-spacing:.01em;text-transform:none;color:#8a939c}
+
+/* Eyebrows: refined small caps feel instead of a terminal look. */
+.home-eyebrow,.app-shell .eyebrow,.learn-kicker,.compare-code,.library-study-code{font-family:var(--sans);font-weight:600;letter-spacing:.14em;font-size:11px}
+.home-eyebrow{color:#c7ccd2}
+.home-guide-input label,.app-shell .filter-title,.app-shell .field-label{font-family:var(--sans);font-weight:600;letter-spacing:.12em}
+
+/* Reading text */
+.discovery-lead,.home-section-heading>p,.app-shell .page-title p{font-weight:400;letter-spacing:-.01em;line-height:1.6;color:#b4bcc5}
+.discovery-lead{font-size:19px}
+.app-shell p{line-height:1.65}
+
+/* Buttons and controls: softer, rounder, Apple-like. */
+.app-shell .button{font-family:var(--sans);font-weight:550;letter-spacing:-.01em;border-radius:999px}
+.app-shell .button.compact{font-size:13px}
+.rail-link span{font-size:11px;font-weight:500;letter-spacing:0}
+.compare-toggle,.viz-chip,.learn-tool,.lab-presets button{font-family:var(--sans);letter-spacing:-.005em}
+
+/* Numbers */
+.home-proof>div>strong,.viz-kpi strong,.featured-index{font-family:var(--display);font-weight:600;letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+.lab-digits,.lab-mini-digits,.lab-gauge b,.lab-hud,.lab-terminal-text,.lab-bar,.lab-terminal-head{font-family:var(--mono)}
+.lab-out small{font-family:var(--sans)}
+
+/* Flame spotlight and Learn headings pick up the same voice. */
+.app-shell .flame-spotlight-copy h2,.app-shell .quick-card-title,.app-shell .fire-mission h2{font-family:var(--display);letter-spacing:-.03em}
