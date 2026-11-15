@@ -1,0 +1,36 @@
+{
+  "name": "flamingo-research-dashboard",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host localhost --port 5173 --strictPort",
+    "build": "vite build",
+    "preview": "vite preview --host localhost --port 5173 --strictPort",
+    "test:documents": "node scripts/verify-documents.mjs",
+    "test:integration": "node scripts/verify-integration.mjs",
+    "check:copy": "node scripts/audit-copy.mjs",
+    "test:live": "node scripts/verify-live.mjs",
+    "test:guide": "node scripts/verify-guide.mjs",
+    "test": "node scripts/verify-documents.mjs && node scripts/verify-integration.mjs && node scripts/verify-guide.mjs && node scripts/audit-copy.mjs",
+    "worker:install": "npm --prefix worker ci",
+    "worker:dev": "npm --prefix worker run dev",
+    "worker:test": "npm --prefix worker test",
+    "deploy": "node worker/node_modules/wrangler/bin/wrangler.js deploy --config wrangler.toml",
+    "deploy:check": "node worker/node_modules/wrangler/bin/wrangler.js deploy --config wrangler.toml --dry-run --outdir .deploy-check",
+    "check:repository": "node scripts/check-repository.mjs",
+    "test:local-proxy": "node scripts/verify-local-proxy.mjs"
+  },
+  "dependencies": {
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "lucide-react": "^0.468.0"
+  },
+  "devDependencies": {
+    "vite": "^7.2.0"
+  },
+  "packageManager": "pnpm@11.25.0",
+  "engines": {
+    "node": ">=24 <25"
+  }
+}

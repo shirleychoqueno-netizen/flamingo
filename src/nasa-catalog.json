@@ -1,0 +1,152 @@
+[
+  {
+    "accession": "PSI-10",
+    "acronym": "ACME/Flame Design",
+    "title": "Advanced Combustion via Microgravity Experiments / Flame Design",
+    "summary": "ACME Flame Design: normal and inverse spherical diffusion flames (ethylene and methane in the PSI objectives; ethylene and propane in the data table) to determine soot-inception and extinction limits as a function of flow rate, stoichiometric mixture fraction, inert dilution and pressure."
+  },
+  {
+    "accession": "PSI-20",
+    "acronym": "ACME BRE",
+    "title": "Advanced Combustion via Microgravity Experiments - Burning Rate Emulator",
+    "summary": "ACME BRE: porous burners emulate a burning solid to relate flammability in a quiescent atmosphere to material properties (O2 from 21 % to 40 %)."
+  },
+  {
+    "accession": "PSI-21",
+    "acronym": "ACME CLD Flame",
+    "title": "Advanced Combustion via Microgravity Experiments / Coflow Laminar Diffusion Flame",
+    "summary": "ACME CLD Flame: weak, highly diluted methane and ethylene coflow flames; shape, liftoff, temperature and extinction limits for model validation."
+  },
+  {
+    "accession": "PSI-22",
+    "acronym": "ACME E-FIELD Flames",
+    "title": "Advanced Combustion via Microgravity Experiments Electric-Field Effects on Laminar Diffusion Flames",
+    "summary": "ACME E-FIELD Flames: effect of electric fields (up to 10 kV between burner and mesh) on ion current, flame response and soot in laminar gas-jet and coflow diffusion flames. The PSI record states it is not aimed at space applications."
+  },
+  {
+    "accession": "PSI-23",
+    "acronym": "ACME s-Flame",
+    "title": "Advanced Combustion via Microgravity Experiments-Structure and Response of Spherical Diffusion Flames",
+    "summary": "ACME s-Flame: transient spherical diffusion flames, with and without soot, in ~21 % and ~30 % O2 atmospheres, to validate transport and chemical kinetics."
+  },
+  {
+    "accession": "PSI-25",
+    "acronym": "BASS-II",
+    "title": "Burning and Suppression of Solids - II",
+    "summary": "BASS-II: ignition, growth, spread and extinction limits of solid fuels (PMMA films, slabs and rods; SIBAL cotton-fiberglass fabric; Nomex; a wax candle) in low-speed forced flows of up to 40 cm/s, with ambient O2 lowered by nitrogen from about 22 % to 13.6 %."
+  },
+  {
+    "accession": "PSI-26",
+    "acronym": "BASS",
+    "title": "Burning and Suppression of Solids",
+    "summary": "BASS: initial solid-fuel campaign (PMMA, SIBAL, Nomex, Ultem, candle) in slow flow; relates the ground-based NASA-STD-6001 Test 1 to actual flammability in microgravity."
+  },
+  {
+    "accession": "PSI-39",
+    "acronym": "CFI",
+    "title": "Cool Flames Investigation",
+    "summary": "CFI: cool flames of n-dodecane droplets and blends with iso-dodecane between 0.5 and 5 atm; effects of helium dilution and droplet size on extinction."
+  },
+  {
+    "accession": "PSI-47",
+    "acronym": "DAFT / DAFT-2",
+    "title": "Dust and Aerosol Measurement Feasibility Test / Dust and Aerosol Measurement Feasibility Test-2",
+    "summary": "DAFT / DAFT-2: tests whether the particle counter used in SAME works in microgravity, using test dust instead of smoke."
+  },
+  {
+    "accession": "PSI-60",
+    "acronym": null,
+    "title": "Computational and Experimental Analysis of SPICE Data Sets",
+    "summary": "Ground-based analysis of more than 1600 SPICE images to obtain temperature and soot fraction, and explain why soot differs between 1 g and 0 g."
+  },
+  {
+    "accession": "PSI-62",
+    "acronym": null,
+    "title": "Concurrent Flame Spread Modeling using Flamelet Generated Manifolds in Microgravity with Comparison to BASS Experiments using Two-Color Tomography",
+    "summary": "Numerical model (flamelet generated manifolds) of concurrent flame spread over solids, validated against BASS."
+  },
+  {
+    "accession": "PSI-68",
+    "acronym": "FLEX-2",
+    "title": "Flame Extinguishment Experiment - 2",
+    "summary": "FLEX-2: extends FLEX to practical fuels and binary mixtures, with O2 from 0.17 to 0.30 and pressure from 0.5 to 3 atm (ranges of conditions)."
+  },
+  {
+    "accession": "PSI-69",
+    "acronym": "FLEX",
+    "title": "Flame Extinguishment Experiment",
+    "summary": "FLEX: methanol and heptane droplets; maps flammability limits (limiting oxygen index) and the effectiveness of gaseous suppressants (CO2, He) as a function of pressure."
+  },
+  {
+    "accession": "PSI-98",
+    "acronym": "SAFFIRE-I",
+    "title": "Spacecraft Fire Safety Experiment-I",
+    "summary": "Saffire-I: large-scale fire (0.4 × 0.94 m SIBAL fabric) to measure how quickly fire grows and compare it with ground-based flammability testing."
+  },
+  {
+    "accession": "PSI-99",
+    "acronym": "SAFFIRE-II",
+    "title": "Spacecraft Fire Experiment-II",
+    "summary": "Saffire-II: materials (silicone, SIBAL, PMMA, Nomex) burned in Cygnus to determine flammability limits in low gravity versus 1 g."
+  },
+  {
+    "accession": "PSI-100",
+    "acronym": "SAFFIRE-III",
+    "title": "Spacecraft Fire Experiment-III",
+    "summary": "Saffire-III: a large-scale SIBAL fire at 30 cm/s (concurrent and opposed flow) with thermocouples, radiometers, pressure, CO2 and O2 sensors and anemometers."
+  },
+  {
+    "accession": "PSI-101",
+    "acronym": "SAME-R",
+    "title": "Smoke Aerosol Measurement Experiment-Reflight",
+    "summary": "SAME-R: repeat of SAME; measures smoke particle sizes from heated spacecraft materials (pyrolysis) to inform detector design."
+  },
+  {
+    "accession": "PSI-102",
+    "acronym": "SAME",
+    "title": "Smoke and Aerosol Measurement Experiment",
+    "summary": "SAME: smoke particle sizes from Teflon, Kapton, silicone, cotton wick and dibutyl phthalate in microgravity, for smoke detectors."
+  },
+  {
+    "accession": "PSI-106",
+    "acronym": "SLICE",
+    "title": "Structure and Liftoff In Combustion Experiment",
+    "summary": "SLICE: structure and stability (flame liftoff) of laminar diffusion flames as a function of fuel, burner diameter and dilution."
+  },
+  {
+    "accession": "PSI-107",
+    "acronym": "SPICE",
+    "title": "Smoke Point In Co-flow Experiment",
+    "summary": "SPICE: smoke point (the condition at which a flame starts emitting soot) of jet flames with coflowing air in microgravity."
+  },
+  {
+    "accession": "PSI-115",
+    "acronym": null,
+    "title": "Utilization of the Smoke Aerosol Measurement Experiment Data for Advanced Modeling and Simulation of Smoke Generation in Micro-Gravity",
+    "summary": "Numerical simulation of pyrolysis smoke growth using SAME data to quantify differences between smoke in 1 g and in microgravity."
+  },
+  {
+    "accession": "PSI-117",
+    "acronym": null,
+    "title": "Effect of External Thermo-Convective Perturbation on Cool Flame Dynamics: A Multidimensional Multi-Physics CFD Analysis",
+    "summary": "CFD using FLEX data: how thermal and convective perturbations determine the fate of cool droplet flames."
+  },
+  {
+    "accession": "PSI-142",
+    "acronym": null,
+    "title": "Quantitative Studies of Cool Flame Transitions at Radiation / Stretch Extinction Using Counterflow Flames",
+    "summary": "Counterflow simulations and experiments with ozone to construct a cool-flame flammability-limit diagram, supported by FLEX."
+  },
+  {
+    "accession": "PSI-159",
+    "acronym": "ACME CFI-G",
+    "title": "Advanced Combustion via Microgravity Experiments / Cool Flames Investigation with Gases",
+    "summary": "ACME CFI-G: normal and inverse cool diffusion flames of ethane, propane and butane; in inverse flames the burner issues an oxidizer jet with up to about 85 % O2 (jet O2, not the chamber atmosphere)."
+  },
+  {
+    "accession": "PSI-179",
+    "acronym": "ASE",
+    "title": "Aerosol Sampling Experiment",
+    "summary": "ASE: sampling particles from ISS air. Outside the Combustion Science area; provides context on background aerosols versus smoke."
+  }
+]

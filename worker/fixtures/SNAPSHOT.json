@@ -1,0 +1,56 @@
+{
+  "captured_utc": "2026-11-14T20:40:35.030633+00:00",
+  "source": "https://firestore.googleapis.com/v1/projects/flame-in-freefall-aqp/databases/(default)/documents",
+  "public_read_only": true,
+  "documents": [
+    {
+      "path": "meta/index",
+      "file": "meta__index.json",
+      "bytes_received": 120298,
+      "received_sha256": "405e969272f4f99fbf79af401abe922be6499a8369973c20e305cba5b144536c",
+      "update_time": "2026-11-14T20:15:59.497323Z"
+    },
+    {
+      "path": "investigations/PSI-98",
+      "file": "investigations__PSI-98.json",
+      "bytes_received": 7383,
+      "received_sha256": "5a53dc1c2e92f0b909e5d0a230728e2e0c017a2149f2d6b81520b453ba498f8d",
+      "update_time": "2026-11-14T20:16:00.765833Z"
+    },
+    {
+      "path": "tests/PSI-98__0",
+      "file": "tests__PSI-98__0.json",
+      "bytes_received": 17278,
+      "received_sha256": "0bfd38845ebd61f83c88706d5f4cf02603f9e36c910548f0be0007a756039dce",
+      "update_time": "2026-11-14T20:16:14.426811Z"
+    },
+    {
+      "path": "investigations/PSI-100",
+      "file": "investigations__PSI-100.json",
+      "bytes_received": 5058,
+      "received_sha256": "871d087384b4a8e222cfc69e85f270e03fbf60e49c6684098e673ac41512dafd",
+      "update_time": "2026-11-14T20:15:59.497323Z"
+    },
+    {
+      "path": "tests/PSI-100__0",
+      "file": "tests__PSI-100__0.json",
+      "bytes_received": 8956,
+      "received_sha256": "c42d6cc549326ec28dde96f918c3e509b80643bbec89c2a751406ef2791c2703",
+      "update_time": "2026-11-14T20:16:00.765833Z"
+    },
+    {
+      "path": "investigations/PSI-25",
+      "file": "investigations__PSI-25.json",
+      "bytes_received": 13996,
+      "received_sha256": "28e45c6b75dc5e99a7745151fad45c4c64cb89d30336c8b000917a03b4fe8b6e",
+      "update_time": "2026-11-14T20:15:59.933908Z"
+    },
+    {
+      "path": "tests/PSI-25__0",
+      "file": "tests__PSI-25__0.json",
+      "bytes_received": 677417,
+      "received_sha256": "43d65d4bdbc9a546db59a57179a479d7c17cf5e8f010423d0ac4b38045cd2ad0",
+      "update_time": "2026-11-14T20:16:10.931503Z"
+    }
+  ]
+}

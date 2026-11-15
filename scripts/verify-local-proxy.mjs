@@ -1,0 +1,9 @@
+import assert from 'node:assert/strict';
+import {writeFile} from 'node:fs/promises';
+const api='http://127.0.0.1:8787',origin='http://localhost:5173';
+const healthResponse=await fetch(api+'/health',{headers:{Origin:origin}});assert.equal(healthResponse.status,200);const health=await healthResponse.json();assert.equal(health.generation_enabled,false);assert.equal(health.rag_generation_enabled,false);assert.equal(health.retrieval.semantic_enabled,false);
+async function post(path,body){const response=await fetch(api+path,{method:'POST',headers:{Origin:origin,'Content-Type':'application/json'},body:JSON.stringify(body)});assert.equal(response.status,200);assert.equal(response.headers.get('Access-Control-Allow-Origin'),origin);return response.json();}
+const rag=await post('/v1/rag',{query:'fan calibration airflow',accession:'PSI-25',mode:'auto',limit:6,generate:false});assert.equal(rag.status,'evidence_only');assert.equal(rag.retrieval.mode_used,'lexical');assert.ok(rag.retrieval.matches.length>0);assert.equal(rag.generation.performed,false);
+const comparison=await post('/v1/compare',{test_uids:['PSI-98|PSI-98_Experimental table_SAFFIRE-1.csv|1','PSI-98|PSI-98_Experimental table_SAFFIRE-1.csv|2']});assert.equal(comparison.status,'selected_source_rows');assert.equal(comparison.evidence[0].cells['Percent O2'],'21.5 - 21.7');assert.equal(comparison.evidence[1].cells['Percent O2'],'~ 21.5');assert.equal(comparison.generation_performed,false);
+await writeFile('local-proxy-verification.json',JSON.stringify({checked_utc:new Date().toISOString(),status:'passed',default_proxy:'local lexical evidence and public-source comparison',semantic_enabled:false,provider_generation:false,OpenAI_requests:0},null,2)+'\n');
+console.log('PASS: documented local proxy returns lexical evidence and original Saffire cells without model keys or AI bindings.');

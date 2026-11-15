@@ -1,0 +1,14 @@
+* text=auto eol=lf
+*.pdf binary
+*.webm binary
+*.gif binary
+*.jpg binary
+*.jpeg binary
+*.png binary
+# Hash-identified scientific snapshots must retain their original bytes on all OSes.
+/public/data/rows/*.json -text
+/src/documents.json -text
+/src/investigation-catalog.json -text
+/worker/src/generated/retrieval-corpus.json -text
+/worker/fixtures/*.json -text
+

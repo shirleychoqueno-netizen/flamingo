@@ -1,0 +1,164 @@
+{
+  "id": "acme",
+  "acronym": "ACME",
+  "title": "Advanced Combustion via Microgravity Experiments",
+  "subtitle": "One platform, six perspectives on combustion",
+  "type": "Project description",
+  "platform": "ISS · CIR",
+  "gravity": "Microgravity",
+  "fuelState": "Gaseous",
+  "tags": [
+    "Diffusion flames",
+    "Instrumentation",
+    "Soot",
+    "Extinction"
+  ],
+  "summary": "Six gaseous-flame investigations share modular hardware. The document presents objectives, instruments and system capabilities alongside selected reference findings.",
+  "relevance": "Helps identify flame, soot-formation and extinction variables for studying fire-safety phenomena.",
+  "limitation": "Equipment capability is not an experimental condition. This profile contains no test matrix and does not validate predictions for lunar or Martian gravity.",
+  "application": "Helps identify quantities to observe when studying detection and combustion limits. Additional evidence is needed to apply this to an operational safety system.",
+  "source": {
+    "label": "ACME reference document · 19 pages",
+    "url": null,
+    "credit": "Original supplied PDF, preserved in public/documents with its recorded source hash."
+  },
+  "methods": [
+    [
+      "Color camera",
+      "Flame shape and visible emission",
+      "p. 13"
+    ],
+    [
+      "Intensified camera",
+      "OH and CH emission with optical filters",
+      "pp. 14–15"
+    ],
+    [
+      "Optical extinction",
+      "Soot distribution",
+      "p. 16"
+    ],
+    [
+      "Radiometer",
+      "Flame radiation",
+      "p. 17"
+    ],
+    [
+      "Chromatography de gases",
+      "Composition before and after the test",
+      "p. 18"
+    ]
+  ],
+  "variables": [
+    {
+      "id": "gravity",
+      "category": "environment",
+      "subcategory": "Gravity",
+      "name": "Entorno experimental",
+      "value": "Microgravity en la ISS",
+      "unit": "",
+      "kind": "Contexto experimental",
+      "page": "p. 1",
+      "note": "The intended application habitat is retained separately."
+    },
+    {
+      "id": "volume",
+      "category": "environment",
+      "subcategory": "Confinement",
+      "name": "Chamber free volume",
+      "value": 90,
+      "unit": "L",
+      "kind": "Equipment capability",
+      "page": "p. 18",
+      "note": "Approximate; constant-volume chamber."
+    },
+    {
+      "id": "field",
+      "category": "environment",
+      "subcategory": "Confinement",
+      "name": "Electric field: applied voltage",
+      "value": "−10 a +10",
+      "unit": "kV",
+      "kind": "Equipment capability",
+      "page": "p. 18",
+      "note": "E-FIELD system range; neither a measured result nor actual partial gravity."
+    },
+    {
+      "id": "oxygen-trials",
+      "category": "environment",
+      "subcategory": "Atmosphere",
+      "name": "O₂ concentration por ensayo",
+      "value": null,
+      "unit": "% vol.",
+      "kind": "Not reported",
+      "page": "—",
+      "note": "A matrix of per-test concentrations has not been incorporated."
+    },
+    {
+      "id": "fuel",
+      "category": "fuel",
+      "subcategory": "Identity and composition",
+      "name": "Fuel state",
+      "value": "Gaseous",
+      "unit": "",
+      "kind": "Contexto experimental",
+      "page": "p. 1",
+      "note": "The project studies laminar nonpremixed gaseous flames."
+    },
+    {
+      "id": "flow",
+      "category": "fuel",
+      "subcategory": "Preparation",
+      "name": "Maximum fuel flow rate",
+      "value": 2,
+      "unit": "slpm",
+      "kind": "Equipment capability",
+      "page": "p. 11",
+      "note": "Value refers to nitrogen calibration, not to the flow rate of every fuel."
+    },
+    {
+      "id": "soot",
+      "category": "fire",
+      "subcategory": "Consumption and products",
+      "name": "Soot: comparison with normal gravity",
+      "value": "5–8 veces",
+      "unit": "",
+      "kind": "Summarized finding",
+      "page": "p. 4",
+      "note": "Refers to CLD results cited in the document, not to all ACME experiments."
+    },
+    {
+      "id": "detector",
+      "category": "safety",
+      "subcategory": "Detection",
+      "name": "Cabin detector response time",
+      "value": null,
+      "unit": "s",
+      "kind": "Not reported",
+      "page": "—",
+      "note": "Scientific instruments do not constitute cabin-alarm validation."
+    },
+    {
+      "id": "camera",
+      "category": "evidence",
+      "subcategory": "Instrumentation",
+      "name": "Maximum color-camera frequency",
+      "value": 30,
+      "unit": "fps",
+      "kind": "Equipment capability",
+      "page": "p. 13",
+      "note": "Up to 30 images/s; 1360 × 1024 resolution and 12 bits."
+    },
+    {
+      "id": "uncertainty",
+      "category": "evidence",
+      "subcategory": "Quality and limits",
+      "name": "Uncertainty por ensayo",
+      "value": null,
+      "unit": "",
+      "kind": "Not reported",
+      "page": "—",
+      "note": "Pending extraction from the documents and files of each investigation."
+    }
+  ]
+}

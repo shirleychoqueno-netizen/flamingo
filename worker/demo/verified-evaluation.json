@@ -1,0 +1,50 @@
+{
+  "mode": "recorded_private_evaluation",
+  "generated_live_on_this_click": false,
+  "recorded_utc": "2026-11-15T13:59:45.591Z",
+  "question": "Can one fan calibration convert every BASS-II test to a steady airflow speed?",
+  "status": "generated_excerpts_require_review",
+  "model": "gpt-5.4-mini-2026-03-17",
+  "passages": [
+    {
+      "quote": "Note:  Data is organized by number of restrictors used.  Not all restrictors were comonly used, so often the fan calibration only includes the restrictors of interest for that day. Some days we ran out of time before the fan cal could be complete.",
+      "chunk_id": "394eb19b0db48d6319e9508ff665b79d1442327a99fed84d9ab6449512f8a733",
+      "evidence_id": "cell:8b6dc6d33b6704fed997e7f15ba5620fee5221be200eb42b1ef4423c864f2a83",
+      "accession": "PSI-25",
+      "source_kind": "workbook_cached_cell",
+      "locator": "PSI-25_Reference Data_Fan calibration data.xlsx:xl/worksheets/sheet1.xml!D1",
+      "source_filename": "PSI-25_Reference Data_Fan calibration data.xlsx",
+      "source_sha256": "bc0dca3efdef44a7774d8dd37aebc0cedae8d67d7bae8c9cbde9590014a3c983",
+      "psi_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-25",
+      "doi": "10.60555/4qc4-de67",
+      "review_flags": [],
+      "verification": "exact_contiguous_source_excerpt",
+      "scientific_interpretation": "not_established"
+    },
+    {
+      "quote": "Based on SPICE fan calibration data at 56 mm downstream, 36 mm from bottom (centerline)",
+      "chunk_id": "03fc04a0f3f4cdc01c41a6ca99612dd15f6895c1fbdb0c47fc22d2988c55b160",
+      "evidence_id": "cell:4333fbb64c6c74266a6202aec219d1bacf356fbf77c51d67fc4e06d46068d85a",
+      "accession": "PSI-25",
+      "source_kind": "workbook_cached_cell",
+      "locator": "PSI-25_Reference Data_Fan calibration data.xlsx:xl/worksheets/sheet1.xml!A34",
+      "source_filename": "PSI-25_Reference Data_Fan calibration data.xlsx",
+      "source_sha256": "bc0dca3efdef44a7774d8dd37aebc0cedae8d67d7bae8c9cbde9590014a3c983",
+      "psi_url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-25",
+      "doi": "10.60555/4qc4-de67",
+      "review_flags": [],
+      "verification": "exact_contiguous_source_excerpt",
+      "scientific_interpretation": "not_established"
+    }
+  ],
+  "review_result": "pass_with_scope_limits",
+  "scope_notice": "Previously recorded GPT output verified against original source text. This is an extractive evidence demonstration, not a new model request or scientific certification.",
+  "evaluation_summary": {
+    "cases": 9,
+    "model_calls": 7,
+    "partial_cases": [
+      "H5"
+    ],
+    "estimated_standard_cost_total_usd": 0.01298325
+  }
+}

@@ -1,0 +1,22 @@
+# Independent static frontend. The existing research API remains a separate Worker.
+name = "flamingo"
+account_id = "6d9ba464ab11fd0a73143887b2a23453"
+compatibility_date = "2026-11-15"
+workers_dev = true
+preview_urls = false
+send_metrics = false
+
+[assets]
+directory = "dist"
+not_found_handling = "single-page-application"
+
+[observability]
+enabled = true
+
+[observability.logs]
+enabled = true
+head_sampling_rate = 0.05
+
+[observability.traces]
+enabled = true
+head_sampling_rate = 0.01

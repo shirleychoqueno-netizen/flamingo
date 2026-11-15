@@ -1,0 +1,49 @@
+# Local-only: no Workers AI or Vectorize bindings; no provider generation.
+name = "houston-groq-proxy"
+account_id = "6d9ba464ab11fd0a73143887b2a23453"
+main = "src/worker.mjs"
+compatibility_date = "2026-11-14"
+workers_dev = false
+preview_urls = false
+send_metrics = false
+
+[vars]
+AI_PROVIDER = "openai"
+OPENAI_MODEL = "gpt-5.4-mini-2026-03-17"
+OPENAI_REQUIRE_PROMO_SMALL_GROUP = "true"
+OPENAI_PROMO_PROJECT_CONFIRMED = "false"
+OPENAI_BALANCE_CONFIRMED = "false"
+ENABLE_OPENAI = "false"
+ENABLE_RAG_GENERATION = "false"
+OPENAI_BILLING_APPROVED = "false"
+ENABLE_GROQ = "false"
+FREE_TIER_CONFIRMED = "false"
+GROQ_MODEL = "openai/gpt-oss-20b"
+ENABLE_SEMANTIC_SEARCH = "false"
+RETRIEVAL_CORPUS_VERSION = "696e5da5c741deb796e6c0778c39f38dd18eedf5535f554ce7251cc2f9abdaa0"
+
+[observability]
+enabled = true
+
+[observability.logs]
+enabled = true
+head_sampling_rate = 0.05
+
+[observability.traces]
+enabled = true
+head_sampling_rate = 0.01
+
+[[ratelimits]]
+name = "IP_LIMITER"
+namespace_id = "1181101"
+simple = { limit = 3, period = 60 }
+
+[[ratelimits]]
+name = "GLOBAL_LIMITER"
+namespace_id = "1181102"
+simple = { limit = 20, period = 60 }
+
+
+[build]
+command = "node scripts/build_demo.mjs"
+

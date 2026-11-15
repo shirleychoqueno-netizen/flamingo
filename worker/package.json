@@ -1,0 +1,17 @@
+{
+  "name": "houston-groq-proxy",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test test/*.test.mjs",
+    "check": "node --check src/worker.mjs",
+    "dev": "wrangler dev --config wrangler.dev.toml --ip 127.0.0.1 --port 8787",
+    "deploy": "wrangler deploy --config wrangler.toml",
+    "dry-run": "wrangler deploy --config wrangler.toml --dry-run --outdir build",
+    "pretest": "node scripts/build_demo.mjs"
+  },
+  "devDependencies": {
+    "wrangler": "4.162.0"
+  }
+}
