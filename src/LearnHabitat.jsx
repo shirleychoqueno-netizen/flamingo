@@ -91,16 +91,9 @@ function HabitatExplorer({onAsk}) {
  </>;
 }
 
-const headings = {
- habitat: ['01 · HÁBITATS 3D', 'Recorre el espacio', 'pieza por pieza.', 'Gira el modelo, toca un número y descubre de qué está hecha cada parte y qué tiene que ver con el fuego.'],
- lab: ['02 · LABORATORIO DE LLAMA', 'Cambia la gravedad.', 'Mira cómo cambia la llama.', 'Mueve los controles y compara una vela en la Tierra, en la Luna y en órbita.'],
- mission: ['03 · MISIÓN', '¡Suena la alarma!', 'Tú decides qué hacer.', 'Seis decisiones, puntos por cada acierto y una explicación en cada paso.'],
-};
-
 export default function LearnHabitat({navigate, onAsk}) {
  const [mode, setMode] = useState('habitat');
  const [paused, setPaused] = useState(() => typeof matchMedia !== 'undefined' && matchMedia('(prefers-reduced-motion: reduce)').matches);
- const [eyebrow, title, accent, lead] = headings[mode];
  return <main className="research-home learn-page" lang="es">
   <section className="discovery-hero learn-hero">
    <div className="discovery-intro">
@@ -124,12 +117,9 @@ export default function LearnHabitat({navigate, onAsk}) {
    </button>)}
   </nav>
 
-  <div className="home-section-heading learn-section-heading" key={mode}>
-   <div><div className="home-eyebrow"><span/>{eyebrow}</div><h2>{title}<br/><em>{accent}</em></h2></div>
-   <p>{lead}</p>
+  <div className="learn-activity" key={mode}>
+   {mode === 'habitat' ? <HabitatExplorer onAsk={onAsk}/> : mode === 'lab' ? <FlameLab/> : <FireMission/>}
   </div>
-
-  {mode === 'habitat' ? <HabitatExplorer onAsk={onAsk}/> : mode === 'lab' ? <FlameLab/> : <FireMission/>}
 
   <p className="learn-disclaimer" role="note"><Info size={15}/>{learnDisclaimer}</p>
   <section className="home-featured learn-next">

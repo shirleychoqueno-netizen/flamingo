@@ -337,4 +337,6 @@
 .learn-hero-chip>svg:first-child{color:var(--game)}
 .learn-hero-chip:hover,.learn-hero-chip.active{border-color:var(--game)}
 @media(max-width:900px){.learn-games{grid-template-columns:1fr}.learn-game{min-height:0;flex-direction:row;flex-wrap:wrap;align-items:center;padding:20px}.learn-game-icon{width:60px;height:60px;border-radius:18px;margin:0}.learn-game strong{font-size:22px;flex:1}.learn-game-tag{width:100%}.learn-game small{width:100%}.learn-game-play{margin-top:4px}}
-@media(prefers-reduced-motion:reduce){.learn-game,.learn-game-icon,.learn-game:before{transition:none}}
+@media(prefers-reduced-motion:reduce){.learn-game,.learn-game-icon,.learn-game:before{transition:none}}.learn-activity{margin-top:34px;animation:learn-in .45s ease}
+@media(prefers-reduced-motion:reduce){.learn-activity{animation:none}}
+@media(max-width:900px){.learn-game{display:grid;grid-template-columns:auto 1fr;align-items:center;column-gap:16px;row-gap:10px}.learn-game-tag,.learn-game small,.learn-game-play{grid-column:1/-1}.learn-game small{max-width:none}.learn-game-play{justify-self:start}.learn-game strong{flex:none}}
