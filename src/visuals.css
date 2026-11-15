@@ -109,4 +109,47 @@
 .records-loading{display:flex;flex-direction:column;gap:12px;padding:40px 10px;color:#9faab5;font-size:14px}
 .records-loading-bar{height:8px;border-radius:999px;background:#1a1f26;overflow:hidden}
 .records-loading-bar i{display:block;height:100%;background:linear-gradient(90deg,#ff8a3d,#ffcf5a);transition:width .3s}
-@media(max-width:700px){.explore-tabs{grid-template-columns:1fr}.explore-tabs button{padding:12px 14px}.records-grid{grid-template-columns:1fr}}
+@media(max-width:700px){.explore-tabs{grid-template-columns:1fr}.explore-tabs button{padding:12px 14px}.records-grid{grid-template-columns:1fr}}/* ===== One feed: subtle filter, type badges, icon tiles ===== */
+.explore-filter{display:flex;flex-wrap:wrap;gap:8px;margin:4px 0 16px}
+.explore-filter button{display:inline-flex;align-items:center;gap:7px;padding:8px 14px;border-radius:999px;border:1px solid #2b3039;background:#0b0e12;color:#c8d0d8;font-size:14px;font-weight:550;cursor:pointer;transition:border-color .2s,background .2s}
+.explore-filter button:hover{border-color:#685748}
+.explore-filter button svg{color:var(--warm)}
+.explore-filter button b{font:600 12px var(--mono);color:#8a939c}
+.explore-filter button.active{border-color:var(--warm);background:#2a1b10;color:#fff}
+.explore-filter button.active b{color:#ffb98a}
+.type-badge{--t:#ff8a3d;position:absolute;top:14px;right:14px;display:inline-flex;align-items:center;gap:5px;padding:4px 9px;border-radius:999px;font:700 10.5px var(--sans);letter-spacing:.08em;text-transform:uppercase;color:var(--t);background:color-mix(in srgb,var(--t) 14%,#0b0e12);border:1px solid color-mix(in srgb,var(--t) 40%,transparent)}
+.record-card{padding-top:20px}
+.record-card .record-head{padding-right:96px}
+.record-card.study h3 a:hover{color:var(--warm)}
+.app-shell .record-card.study h3{font-size:17px;line-height:1.35}
+.record-cells div{--f:#9faab5;display:flex;gap:8px;align-items:flex-start}
+.record-cells div>span:last-child{min-width:0}
+.cell-icon{flex:none;display:grid;place-items:center;width:26px;height:26px;border-radius:8px;color:#0b0e12;background:var(--f,#9faab5);box-shadow:0 0 12px color-mix(in srgb,var(--f,#9faab5) 35%,transparent)}
+/* ===== Investigation page: row cards and charts ===== */
+.row-grid{display:grid!important;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:14px}
+.app-shell .row-card{--accent:#ff8a3d;display:flex;flex-direction:column;gap:12px;padding:16px;border-radius:18px;border:1px solid #2b3039;background:radial-gradient(circle at 0% 0%,color-mix(in srgb,var(--accent) 12%,transparent),transparent 50%),#0b0e12;margin:0}
+.row-card-head{display:flex;align-items:center;gap:12px}
+.row-card-head>div{flex:1;min-width:0}
+.row-card-head strong{display:block;font-size:17px;color:#fff}
+.row-card-head .study-orb>i{display:none}
+.row-card details summary{cursor:pointer;font-size:13.5px;color:#9faab5}
+.row-card details[open] summary{color:#ffb98a;margin-bottom:10px}
+.icon-cells div{--f:#9faab5}
+.icon-cells dt{display:flex;align-items:center;gap:6px}
+.icon-cells dt svg{color:var(--f)}
+.row-charts{margin:8px 0 22px;padding:18px;border-radius:20px;border:1px solid #2b3039;background:linear-gradient(160deg,#10151c,#090c10)}
+.row-charts-head{display:flex;justify-content:space-between;align-items:baseline;gap:16px;flex-wrap:wrap;margin-bottom:14px}
+.row-charts-head small{font-size:13px;color:#8a939c}
+.row-charts-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
+.row-chart{--f:#ff8a3d;display:flex;flex-direction:column;gap:12px;padding:14px;border-radius:16px;background:#07090c;border:1px solid #1f242b}
+.row-chart header{display:flex;align-items:center;gap:10px}
+.row-chart header strong{display:block;font-size:15px;color:#fff}
+.row-chart header small{display:block;font-size:11.5px;color:#8a939c;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:220px}
+.row-chart>svg{width:100%;height:84px;display:block}
+.row-chart rect{fill:var(--f);opacity:.85}
+.row-chart line{stroke:#fff;stroke-width:.6;stroke-dasharray:3 2;opacity:.6;vector-effect:non-scaling-stroke}
+.row-chart dl{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:0}
+.row-chart dl div{padding:6px 8px;border-radius:8px;background:#0e1217}
+.row-chart dt{font-size:10.5px;color:#8a939c}
+.row-chart dd{margin:2px 0 0;font:600 13px var(--mono);color:#e4e4df}
+@media(max-width:700px){.row-grid{grid-template-columns:1fr}.record-card .record-head{padding-right:0;margin-top:22px}}
