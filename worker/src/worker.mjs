@@ -6,7 +6,7 @@ import { answerRag, validateRag } from './rag.mjs';
 import demoAssets from './generated/demo-assets.mjs';
 
 export function allowedOrigin(origin) {
-  if (['https://flame-in-freefall-aqp.web.app', 'https://ignis-combustion-explorer.cheeky-vole-0211.chatgpt.site', 'https://houston-groq-proxy.houston-groq-proxy.workers.dev', 'https://flamingo.houston-groq-proxy.workers.dev'].includes(origin)) return true;
+  if (['https://flame-in-freefall-aqp.web.app', 'https://ignis-combustion-explorer.cheeky-vole-0211.chatgpt.site', 'https://houston-groq-proxy.houston-groq-proxy.workers.dev', 'https://flamingo.houston-groq-proxy.workers.dev', 'https://shirleychoqueno-netizen.github.io'].includes(origin)) return true;
   try { const url = new URL(origin); return url.protocol === 'http:' && url.hostname === 'localhost' && url.origin === origin; } catch { return false; }
 }
 function response(body, http = 200, origin = null, extra = {}) {

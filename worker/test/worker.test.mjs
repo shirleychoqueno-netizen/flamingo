@@ -94,6 +94,15 @@ test('flamingo public frontend origin is allowed exactly, including health and A
  const preflight=await handle(new Request('https://houston.example/v1/rag',{method:'OPTIONS',headers:{Origin:origin}}),environment());
  assert.equal(preflight.status,204);assert.equal(preflight.headers.get('Access-Control-Allow-Origin'),origin);
 });
+test('collaborator GitHub Pages origin is allowed exactly, including API preflight', async()=>{
+ const origin='https://shirleychoqueno-netizen.github.io';
+ assert.equal(allowedOrigin(origin),true);
+ assert.equal(allowedOrigin(origin+'.evil.example'),false);
+ assert.equal(allowedOrigin('https://evil.github.io'),false);
+ assert.equal(allowedOrigin('http://shirleychoqueno-netizen.github.io'),false);
+ const preflight=await createHandler()(new Request('https://houston.example/v1/rag',{method:'OPTIONS',headers:{Origin:origin}}),environment());
+ assert.equal(preflight.status,204);assert.equal(preflight.headers.get('Access-Control-Allow-Origin'),origin);
+});
 test('default transport retains the Workers global fetch receiver', async () => {
   const previous = globalThis.fetch;
   const fake = fixtureFetch(files, selected);
